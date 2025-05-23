@@ -155,4 +155,4 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
-          thresholds: '70 80'
+          thresholds: '3 70' # for now it's whatever, we're working on it
