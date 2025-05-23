@@ -1,0 +1,27 @@
+<div class="dm-es-logs-container is-loader-only" data-controller-url="{{ field.customOptions.get('controllerUrl') }}">
+    <table class="table datagrid datagrid-empty">
+        <tbody>
+        {% block table_body %}
+                {% for i in 1..4 %}
+                    <tr class="empty-row">
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                    </tr>
+
+                    {% if 2 == loop.index %}
+                        <tr class="no-results">
+                            <td colspan="100">
+                                Loading...
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+        {% endblock table_body %}
+        </tbody>
+    </table>
+</div>

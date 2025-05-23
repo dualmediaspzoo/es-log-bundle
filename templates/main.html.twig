@@ -1,0 +1,162 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var admin_context \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var entity \DualMedia\EsLogBundle\Model\Entry #}
+{# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
+{# @var admin_context \EasyCorp\Bundle\EasyAdminBundle\Orm\AdminContext local admin context #}
+
+{% set num_results = entities|length %}
+
+{% macro modal(id, body) %}
+    <div id="{{ id }}" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Changes</h4>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ body|raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+<div class="dm-es-logs-modal-container">
+    {% for entity in entities %}
+        {% if entity.changes|length != 0 %}
+            {% set contents %}
+                <div class="change-block">
+                    {% for key, change in entity.changes %}
+                        <div class="change-single position-relative py-3">
+                            <div class="change-title px-3">
+                                <h5>{{ key }}</h5>
+                            </div>
+                            <div class="change-data">
+                                <div class="row">
+                                    <i class="fa fa-arrow-right position-absolute w-auto top-0 opacity-25" style="left: 50%; transform: translateX(-50%); font-size: 60px;"></i>
+                                    <div class="col-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="card-title border-bottom pb-2">From</h6>
+                                                <div>
+                                                    {% include '@EsLog/displayField.html.twig' with {value: change.from} only %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="card-title border-bottom pb-2">To</h6>
+                                                <div>
+                                                    {% include '@EsLog/displayField.html.twig' with {value: change.to} only %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endset %}
+
+            {{ _self.modal('modal' ~ entity.documentId, contents) }}
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div class="dm-es-logs-container">
+    <table class="table datagrid {{ entities is empty ? 'datagrid-empty' }}">
+        {% if num_results > 0 %}
+            <thead>
+            {% block table_head %}
+                <tr>
+                    <th class="text-left" dir="{{ ea.i18n.textDirection }}">
+                        <span>
+                            Action
+                        </span>
+                    </th>
+                    <th>
+                        <span>
+                            User context
+                        </span>
+                    </th>
+                    <th>
+                        <span>
+                            Logged at
+                        </span>
+                    </th>
+                    <th>
+                        <span>
+                            Changes
+                        </span>
+                    </th>
+                </tr>
+            {% endblock table_head %}
+            </thead>
+        {% endif %}
+
+        <tbody>
+        {% block table_body %}
+            {% for entity in entities %}
+                <tr>
+                    <td>
+                        <span class="badge badge-pill">
+                            {{ entity.action.name }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if null != entity.userIdentifier %}
+                            {% include '@EsLog/user.html.twig' with {userIdentifier: entity.userIdentifier, userIdentifierClass: entity.userIdentifierClass} only %}
+                        {% else %}
+                            <span class="badge badge-outline">Null</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ entity.loggedAt|date }}
+                    </td>
+                    <td>
+                        {% if entity.changes|length == 0 %}
+                            {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
+                        {% else %}
+                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modal{{ entity.documentId }}">
+                                <i class="fa fa-search"></i>
+                                Show changes
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                {% for i in 1..4 %}
+                    <tr class="empty-row">
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                    </tr>
+
+                    {% if 2 == loop.index %}
+                        <tr class="no-results">
+                            <td colspan="100">
+                                {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% endblock table_body %}
+        </tbody>
+    </table>
+
+    {% if entities|length > 0 %}
+        <div class="content-panel-footer without-padding without-border">
+            {% block paginator %}
+                {{ include(ea.templatePath('crud/paginator'), {allowedPageSizes: [5, 15, 25]}) }}
+            {% endblock paginator %}
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,19 @@
+{# @var value \DualMedia\EsLogBundle\Model\LoadedValue #}
+{% if value.complex %}
+    {% include '@EsLog/field/complex.html.twig' with {value: value} only %}
+{% else %}
+    {# do some nasty shit to display nicely for now #}
+    {% set loaded = value.loaded %}
+
+    {% if loaded.timestamp is defined %} {# date #}
+        {% include '@EsLog/field/datetime.html.twig' with {value: loaded} only %}
+    {% elseif loaded.name is defined %} {# enum #}
+        {% include '@EsLog/field/enum.html.twig' with {value: loaded} only %}
+    {% elseif loaded is null %}
+        {% include '@EsLog/field/null.html.twig' with {value: null} only %}
+    {% elseif loaded == false or loaded == true %}
+        {% include '@EsLog/field/bool.html.twig' with {value: loaded} only %}
+    {% else %}
+        {% include '@EsLog/field/generic.html.twig' with {value: loaded} only %}
+    {% endif %}
+{% endif %}

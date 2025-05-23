@@ -1,0 +1,4 @@
+{# @var value bool #}
+
+<span class="badge {{ value == true ? 'badge-boolean-true text-success' : 'badge-boolean-false text-danger' }}">
+{{ (value == true ? 'True' : 'False')|trans }}
