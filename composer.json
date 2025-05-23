@@ -49,6 +49,11 @@
             "name": "Bartosz Urbaniak <barturb>",
             "homepage": "https://github.com/barturb",
             "role": "Bug fixes and general help"
+        },
+        {
+            "name": "ozgaB",
+            "homepage": "https://github.com/ozgaB",
+            "role": "Tests and general fixes"
         }
     ],
     "minimum-stability": "stable",
