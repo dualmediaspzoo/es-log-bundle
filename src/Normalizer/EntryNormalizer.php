@@ -27,6 +27,8 @@ class EntryNormalizer
 {
     use UtcTrait;
 
+    public const string DATE_FORMAT_MICROTIME = 'Y-m-d\TH:i:s.u';
+
     /**
      * @param iterable<NormalizerInterface> $normalizers
      * @param iterable<DenormalizerInterface<mixed>> $denormalizers
@@ -68,7 +70,7 @@ class EntryNormalizer
             'action' => $entry->getAction()->value,
             'loggedAt' => \DateTimeImmutable::createFromInterface($entry->getLoggedAt())
                 ->setTimezone($this->getUtc())
-                ->format(\DateTimeInterface::ATOM),
+                ->format(self::DATE_FORMAT_MICROTIME),
             'objectId' => $entry->getObjectId(),
             'objectClass' => $entry->getObjectClass(),
             'changes' => $changes,
@@ -86,7 +88,8 @@ class EntryNormalizer
         array $input
     ): Entry {
         $action = ActionEnum::from($input['action']);
-        $loggedAt = new \DateTimeImmutable($input['loggedAt'], $this->getUtc());
+        $loggedAt = \DateTimeImmutable::createFromFormat(self::DATE_FORMAT_MICROTIME, $input['loggedAt'], $this->getUtc());
+        /** @var \DateTimeImmutable $loggedAt */
         $objectId = $input['objectId'];
         $objectClass = $input['objectClass'];
         $userIdentifier = $input['userIdentifier'];
