@@ -89,6 +89,7 @@ class EntryNormalizer
     ): Entry {
         $action = ActionEnum::from($input['action']);
         $loggedAt = \DateTimeImmutable::createFromFormat(self::DATE_FORMAT_MICROTIME, $input['loggedAt'], $this->getUtc());
+        /** @var \DateTimeImmutable $loggedAt */
         $objectId = $input['objectId'];
         $objectClass = $input['objectClass'];
         $userIdentifier = $input['userIdentifier'];
