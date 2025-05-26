@@ -25,18 +25,28 @@ return static function (ContainerConfigurator $configurator) {
         ->arg('$client', new Reference('.dualmedia.log.client'))
         ->tag('console.command');
 
+    $services->set(\DualMedia\EsLogBundle\LogStorage::class);
+
+    $services->set(\DualMedia\EsLogBundle\ChangeSetProvider::class);
+
     $services->set(\DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber::class)
-        ->arg('$configuration', new Reference('.dualmedia.log.configuration'))
-        ->arg('$client', new Reference('.dualmedia.log.client'))
-        ->arg('$metadataProvider', new Reference(\DualMedia\EsLogBundle\Metadata\ConfigProvider::class))
-        ->arg('$normalizer', new Reference(\DualMedia\EsLogBundle\Normalizer\EntryNormalizer::class))
+        ->arg('$configProvider', new Reference(\DualMedia\EsLogBundle\Metadata\ConfigProvider::class))
         ->arg('$context', new Reference(\DualMedia\EsLogBundle\UserContext::class))
+        ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
+        ->arg('$changeSetProvider', new Reference(\DualMedia\EsLogBundle\ChangeSetProvider::class))
         ->tag('doctrine.event_listener', [
             'event' => Events::onFlush,
         ])
         ->tag('doctrine.event_listener', [
             'event' => Events::postFlush,
         ]);
+
+    $services->set(\DualMedia\EsLogBundle\EventSubscriber\SaveSubscriber::class)
+        ->arg('$configuration', new Reference('.dualmedia.log.configuration'))
+        ->arg('$client', new Reference('.dualmedia.log.client'))
+        ->arg('$normalizer', new Reference(\DualMedia\EsLogBundle\Normalizer\EntryNormalizer::class))
+        ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
+        ->tag('kernel.event_subscriber');
 
     $services->set(\DualMedia\EsLogBundle\UserContext::class)
         ->arg('$tokenStorage', new Reference('security.token_storage', \Symfony\Component\DependencyInjection\ContainerInterface::NULL_ON_INVALID_REFERENCE));
