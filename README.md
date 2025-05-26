@@ -38,6 +38,8 @@ A sample configuration is provided below
 
 dm_es_logs:
   client_service: 'fos_elastica.client.default' # default value, set to an id of the ES client you're using
+  cache: 'cache.app' # default value, set to any symfony cache
+  index_name: 'dm_entity_logs' # default value
   entity_paths: # list of directories that contain your entities
     - '%kernel.project_dir%/src/SimpleApi/Entity'
     - '%kernel.project_dir%/src/Common/Entity'
