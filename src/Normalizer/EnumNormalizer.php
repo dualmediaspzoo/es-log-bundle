@@ -9,22 +9,22 @@ use DualMedia\EsLogBundle\Model\LoadedValue;
 use DualMedia\EsLogBundle\Model\Value;
 
 /**
- * @implements DenormalizerInterface<\UnitEnum>
+ * @implements DenormalizerInterface<\BackedEnum>
  */
 class EnumNormalizer implements NormalizerInterface, DenormalizerInterface
 {
-    public const string MARKER = 'isUnitEnum';
+    public const string MARKER = 'isBackedEnum';
 
     public function normalize(
         Entry $entry,
         string $field,
         mixed $value
     ): Value|null {
-        if (!($value instanceof \UnitEnum)) {
+        if (!($value instanceof \BackedEnum)) {
             return null;
         }
 
-        return new Value($value->name, [self::MARKER => true], type: get_class($value));
+        return new Value($value->value, [self::MARKER => true], type: get_class($value));
     }
 
     public function denormalize(
@@ -36,22 +36,9 @@ class EnumNormalizer implements NormalizerInterface, DenormalizerInterface
             return null;
         }
 
-        /**
-         * @param class-string<\UnitEnum> $class
-         */
-        $fromName = function (string $class, string $name): \UnitEnum|null {
-            foreach ($class::cases() as $case) {
-                if ($name === $case->name) {
-                    return $case;
-                }
-            }
-
-            return null;
-        };
-
         return new LoadedValue(
             $value,
-            static fn () => $fromName($value->type, $value->value)
+            static fn () => call_user_func([$value->type, 'from'], $value->value) // @phpstan-ignore-line
         );
     }
 }

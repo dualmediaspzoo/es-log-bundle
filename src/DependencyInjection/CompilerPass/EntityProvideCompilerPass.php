@@ -2,6 +2,7 @@
 
 namespace DualMedia\EsLogBundle\DependencyInjection\CompilerPass;
 
+use Doctrine\ORM\Mapping\Column;
 use DualMedia\EsLogBundle\Attribute\AsIgnoredProperty;
 use DualMedia\EsLogBundle\Attribute\AsLoggedEntity;
 use DualMedia\EsLogBundle\Attribute\AsTrackedProperty;
@@ -92,10 +93,33 @@ class EntityProvideCompilerPass implements CompilerPassInterface
                     continue;
                 }
 
-                $metadata[$class]['properties'][] = $property->getName();
+                $propertyMetadata = [];
+
+                // get enum from column, if set
+                if (null !== ($enumClass = $this->getEnumClass($property))) {
+                    $propertyMetadata['enumClass'] = $enumClass;
+                }
+
+                $metadata[$class]['properties'][$property->getName()] = $propertyMetadata;
             }
         }
 
         $container->getDefinition(ConfigProvider::class)->setArgument('$config', $metadata);
+    }
+
+    /**
+     * @return class-string<\BackedEnum>|null
+     */
+    private function getEnumClass(
+        \ReflectionProperty $property
+    ): string|null {
+        /** @var Column|null $orm */
+        $orm = ($property->getAttributes(Column::class)[0] ?? null)?->newInstance();
+
+        if (null === $orm?->enumType) {
+            return null;
+        }
+
+        return is_a($orm->enumType, \BackedEnum::class, true) ? $orm->enumType : null;
     }
 }
