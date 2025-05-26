@@ -196,7 +196,6 @@ class DoctrineSubscriber
                 }
             }
 
-            // todo: check for enum stuff
             $changeSet[$field] = new Change($from, $to);
         }
 
