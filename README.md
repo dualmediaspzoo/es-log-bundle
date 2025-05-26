@@ -46,6 +46,11 @@ dm_es_logs:
     - '%kernel.project_dir%/src/ExternalApi/Entity'
 ```
 
+> To add the index the bundle expects simply run `dualmedia:logs:create-index`,
+> to delete run `dualmedia:logs:delete-index --force` (an optional `--if-exists` flag is available)
+
+Optionally see src/Command/CreateEsIndexCommand for current 
+
 ## EasyAdmin
 
 An integration with [EasyAdminBundle](https://github.com/EasyCorp/EasyAdminBundle) is available, should work... Mostly.
