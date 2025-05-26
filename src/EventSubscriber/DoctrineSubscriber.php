@@ -179,11 +179,25 @@ class DoctrineSubscriber
         $changeSet = [];
 
         foreach ($uow->getEntityChangeSet($object) as $field => $changes) {
-            if (!in_array($field, $config['properties'], true)) {
+            if (null === ($metadata = $config['properties'][$field] ?? null)) {
                 continue;
             }
 
-            $changeSet[$field] = new Change(...$changes);
+            $from = $changes[0];
+            $to = $changes[1];
+
+            if (null !== ($enumClass = $metadata['enumClass'] ?? null)) {
+                if (null !== $from && !($from instanceof \BackedEnum)) {
+                    $from = $enumClass::from($from);
+                }
+
+                if (null !== $to && !($to instanceof \BackedEnum)) {
+                    $to = $enumClass::from($to);
+                }
+            }
+
+            // todo: check for enum stuff
+            $changeSet[$field] = new Change($from, $to);
         }
 
         return $changeSet;

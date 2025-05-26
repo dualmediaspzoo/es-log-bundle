@@ -7,7 +7,7 @@ namespace DualMedia\EsLogBundle\Metadata;
  *      trackCreate: bool,
  *      trackUpdate: bool,
  *      trackDelete: bool,
- *      properties: list<string>
+ *      properties: array<string, array{enumClass?: class-string<\BackedEnum>}>
  *  }
  */
 class ConfigProvider
