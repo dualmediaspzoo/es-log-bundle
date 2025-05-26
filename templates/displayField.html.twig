@@ -2,16 +2,15 @@
 {% if value.complex %}
     {% include '@EsLog/field/complex.html.twig' with {value: value} only %}
 {% else %}
-    {# do some nasty shit to display nicely for now #}
     {% set loaded = value.loaded %}
 
-    {% if loaded.timestamp is defined %} {# date #}
+    {% if value.value.type == '\DateTimeImmutable' %}
         {% include '@EsLog/field/datetime.html.twig' with {value: loaded} only %}
-    {% elseif loaded.name is defined %} {# enum #}
+    {% elseif value.value.metadata.isUnitEnum is defined %}
         {% include '@EsLog/field/enum.html.twig' with {value: loaded} only %}
-    {% elseif loaded is null %}
+    {% elseif value.value.type == 'null' %}
         {% include '@EsLog/field/null.html.twig' with {value: null} only %}
-    {% elseif loaded == false or loaded == true %}
+    {% elseif value.value.type == 'bool' %}
         {% include '@EsLog/field/bool.html.twig' with {value: loaded} only %}
     {% else %}
         {% include '@EsLog/field/generic.html.twig' with {value: loaded} only %}
