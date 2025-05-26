@@ -32,7 +32,10 @@ class CreateEsIndexCommand extends Command
             'mappings' => [
                 'properties' => [
                     'action' => ['type' => 'keyword'],
-                    'loggedAt' => ['type' => 'date'],
+                    'loggedAt' => [
+                        'type' => 'date',
+                        'format' => 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS',
+                    ],
                     'objectId' => ['type' => 'keyword'],
                     'objectClass' => ['type' => 'keyword'],
                     'changes' => ['type' => 'object'],
