@@ -60,8 +60,7 @@ class BuilderTest extends TestCase
     #[TestWith([])]
     public function testId(
         string|int $id = 1
-    ): void
-    {
+    ): void {
         $this->builder->start();
         $this->builder->id($id);
         $search = $this->builder->build();
@@ -69,14 +68,13 @@ class BuilderTest extends TestCase
     }
 
     #[TestWith([])]
-    #[TestWith(['field',true])]
+    #[TestWith(['field', true])]
     public function testSort(
         string $field = 'test',
         bool $desc = false
-    ): void
-    {
+    ): void {
         $this->builder->start();
-        $this->builder->sort($field,$desc);
+        $this->builder->sort($field, $desc);
         $search = $this->builder->build();
         static::assertSame([$field => ['order' => $desc ? 'desc' : 'asc']], $search->getQuery()->getParam('sort'));
     }
@@ -84,8 +82,7 @@ class BuilderTest extends TestCase
     #[TestWith([])]
     public function testPage(
         int $page = 1
-    ): void
-    {
+    ): void {
         $this->builder->start();
         $this->builder->page($page);
         $search = $this->builder->build();
@@ -95,8 +92,7 @@ class BuilderTest extends TestCase
     #[TestWith([])]
     public function testPerPage(
         int $perPage = 1
-    ): void
-    {
+    ): void {
         $this->builder->start();
         $this->builder->perPage($perPage);
         $this->builder->page(1);

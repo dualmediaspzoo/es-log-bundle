@@ -3,39 +3,42 @@
 namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
 
 use DualMedia\EsLogBundle\Model\Entry;
-use DualMedia\EsLogBundle\Normalizer\BoolNormalizer;
+use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\FloatNormalizer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
-use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
 #[Group('unit')]
 #[Group('normalizer')]
 #[CoversClass(FloatNormalizer::class)]
-class FloatNormalizerTest extends TestCase
+class FloatNormalizerTest extends AbstractNormalizerTestCase
 {
     use ServiceMockHelperTrait;
 
-    private FloatNormalizer $service;
+    protected FloatNormalizer $service;
 
     protected function setUp(): void
     {
         $this->service = $this->createRealMockedServiceInstance(FloatNormalizer::class);
     }
 
-    #[TestWith([1.1,1.1])]
-    #[TestWith([2.23,2.23])]
-    #[TestWith([null,'a'])]
-    #[TestWith([null,1])]
+    #[TestWith([1.1, 1.1])]
+    #[TestWith([2.23, 2.23])]
     public function testNormalize(
         float|null $expected,
         mixed $value,
         string $field = 'test'
-    ): void
+    ): void {
+        $result = $this->service->normalize($this->createMock(Entry::class), $field, $value);
+        static::assertInstanceOf(Value::class, $result);
+        static::assertSame($expected, $result->value);
+    }
+
+    public static function provideNonSupportedCases(): iterable
     {
-        $result = $this->service->normalize($this->createMock(Entry::class),$field,$value);
-        $this->assertSame($expected,$result?->value);
+        yield ['a'];
+        yield [1];
     }
 }

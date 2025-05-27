@@ -2,8 +2,6 @@
 
 namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
 
-use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\Interface\DenormalizerInterface;
 use DualMedia\EsLogBundle\Interface\NormalizerInterface;
@@ -11,15 +9,33 @@ use DualMedia\EsLogBundle\Model\Change;
 use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\LoadedValue;
 use DualMedia\EsLogBundle\Model\Value;
-use DualMedia\EsLogBundle\Normalizer\EntityNormalizer;
 use DualMedia\EsLogBundle\Normalizer\EntryNormalizer;
-use DualMedia\EsLogBundle\Tests\Resource\TestClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
+/**
+ * @phpstan-type EntryData list<array{
+ *      action: string,
+ *      loggedAt: string,
+ *      objectId: string,
+ *      objectClass: string,
+ *      changes: list<int,array{
+ *          from: array{
+ *              value: int,
+ *              type: string
+ *          },
+ *          to: array{
+ *              value: int,
+ *              type: string
+ *          }
+ *      }>,
+ *      userIdentifier: string|null,
+ *      userIdentifierClass: string|null,
+ *  }>
+ */
 #[Group('unit')]
 #[Group('normalizer')]
 #[CoversClass(EntryNormalizer::class)]
@@ -28,24 +44,7 @@ class EntryNormalizerTest extends TestCase
     use ServiceMockHelperTrait;
 
     /**
-     * @param list<array{
-     *     action: string,
-     *     loggedAt: string,
-     *     objectId: string,
-     *     objectClass: string,
-     *     changes: list<int,array{
-     *         from: array{
-     *             value: int,
-     *             type: string
-     *         },
-     *         to: array{
-     *             value: int,
-     *             type: string
-     *         }
-     *     }>,
-     *     userIdentifier: string|null,
-     *     userIdentifierClass: string|null,
-     * }> $expected
+     * @param EntryData $expected
      * @param list<int|null> $normalizersData
      * @param list<int> $changesData
      */
@@ -58,7 +57,7 @@ class EntryNormalizerTest extends TestCase
             'changes' => [],
             'userIdentifier' => null,
             'userIdentifierClass' => null,
-        ]
+        ],
     ])]
     #[TestWith([
         [
@@ -70,23 +69,23 @@ class EntryNormalizerTest extends TestCase
                 0 => [
                     'from' => [
                         'value' => 1,
-                        'type' => 'type'
+                        'type' => 'type',
                     ],
                     'to' => [
                         'value' => 1,
-                        'type' => 'type'
-                    ]
+                        'type' => 'type',
+                    ],
                 ],
                 1 => [
                     'from' => [
                         'value' => 1,
-                        'type' => 'type'
+                        'type' => 'type',
                     ],
                     'to' => [
                         'value' => 1,
-                        'type' => 'type'
-                    ]
-                ]
+                        'type' => 'type',
+                    ],
+                ],
             ],
             'userIdentifier' => '11',
             'userIdentifierClass' => 'UserClass',
@@ -98,7 +97,7 @@ class EntryNormalizerTest extends TestCase
         '7',
         'TestClass1',
         '11',
-        'UserClass'
+        'UserClass',
     ])]
     public function testNormalize(
         array $expected,
@@ -110,11 +109,11 @@ class EntryNormalizerTest extends TestCase
         string $objectClass = 'TestClass',
         string|null $userId = null,
         string|null $userClass = null,
-    ): void
-    {
+    ): void {
         $normalizers = [];
         $changes = [];
-        foreach ($changesData as $data){
+
+        foreach ($changesData as $data) {
             $change = $this->createMock(Change::class);
             $change->method('getTo')
                 ->willReturn('to');
@@ -123,14 +122,14 @@ class EntryNormalizerTest extends TestCase
             $changes[] = $change;
         }
 
-        foreach ($normalizersData as $data){
+        foreach ($normalizersData as $data) {
             $normalizer = $this->createMock(NormalizerInterface::class);
             $normalizer->method('normalize')
                 ->willReturn(new Value($data, type: 'type'));
             $normalizers[] = $normalizer;
         }
 
-        $service = $this->createRealMockedServiceInstance(EntryNormalizer::class,['normalizers' => $normalizers,'denormalizers' => []]);
+        $service = $this->createRealMockedServiceInstance(EntryNormalizer::class, ['normalizers' => $normalizers, 'denormalizers' => []]);
 
         $entry = $this->createMock(Entry::class);
         $entry->method('getChanges')
@@ -148,44 +147,12 @@ class EntryNormalizerTest extends TestCase
         $entry->method('getUserIdentifierClass')
             ->willReturn($userClass);
 
-        $this->assertSame($expected,$service->normalize($entry));
+        static::assertSame($expected, $service->normalize($entry));
     }
 
     /**
-     * @param list<array{
-     *     action: string,
-     *     loggedAt: string,
-     *     objectId: string,
-     *     objectClass: string,
-     *     changes: list<int,array{
-     *         from: array{
-     *             value: int,
-     *             type: string
-     *         },
-     *         to: array{
-     *             value: int,
-     *             type: string
-     *         }
-     *     }>,
-     *     userIdentifier: string|null,
-     *     userIdentifierClass: string|null,
-     * }> $input
-     * @param list<array{
-     *      action: string,
-     *      loggedAt: string,
-     *      objectId: string,
-     *      objectClass: string,
-     *      changes: list<int,array{
-     *          from: array{
-     *              value: int,
-     *          },
-     *          to: array{
-     *              value: int,
-     *          }
-     *      }>,
-     *      userIdentifier: string|null,
-     *      userIdentifierClass: string|null,
-     *  }> $expected
+     * @param EntryData $input
+     * @param EntryData $expected
      * @param list<int> $denormalizersData
      */
     #[TestWith([
@@ -198,27 +165,27 @@ class EntryNormalizerTest extends TestCase
                 0 => [
                     'from' => [
                         'value' => 1,
-                        'type' => 'type'
+                        'type' => 'type',
                     ],
                     'to' => [
                         'value' => 1,
-                        'type' => 'type'
-                    ]
+                        'type' => 'type',
+                    ],
                 ],
                 1 => [
                     'from' => [
                         'value' => 1,
-                        'type' => 'type'
+                        'type' => 'type',
                     ],
                     'to' => [
                         'value' => 1,
-                        'type' => 'type'
-                    ]
-                ]
+                        'type' => 'type',
+                    ],
+                ],
             ],
             'userIdentifier' => null,
             'userIdentifierClass' => null,
-            'documentId' => '1'
+            'documentId' => '1',
         ],
         [
             'action' => 'create',
@@ -229,25 +196,29 @@ class EntryNormalizerTest extends TestCase
                 0 => [
                     'from' => [
                         'value' => 1,
+                        'type' => 'type',
                     ],
                     'to' => [
                         'value' => 1,
+                        'type' => 'type',
                     ],
                 ],
                 1 => [
                     'from' => [
                         'value' => 1,
+                        'type' => 'type',
                     ],
                     'to' => [
                         'value' => 1,
+                        'type' => 'type',
                     ],
                 ],
             ],
             'userIdentifier' => null,
             'userIdentifierClass' => null,
-            'documentId' => '1'
+            'documentId' => '1',
         ],
-        [1,1]
+        [1, 1],
     ])]
     #[TestWith([
         [
@@ -258,7 +229,7 @@ class EntryNormalizerTest extends TestCase
             'changes' => [],
             'userIdentifier' => '1',
             'userIdentifierClass' => '1',
-            'documentId' => '1'
+            'documentId' => '1',
         ],
         [
             'action' => 'update',
@@ -268,40 +239,42 @@ class EntryNormalizerTest extends TestCase
             'changes' => [],
             'userIdentifier' => '1',
             'userIdentifierClass' => '1',
-            'documentId' => '1'
+            'documentId' => '1',
         ],
-        []
+        [],
     ])]
     public function testDenormalize(
         array $input,
         array $expected,
         array $denormalizersData,
-    ): void
-    {
+    ): void {
         $denormalizers = [];
-        foreach ($denormalizersData as $data){
-            $denormalizer = $this->createMock( DenormalizerInterface::class);
+
+        foreach ($denormalizersData as $data) {
+            $denormalizer = $this->createMock(DenormalizerInterface::class);
             $denormalizer->method('denormalize')
-                ->willReturn(new LoadedValue(new Value($data,type: 'type')));
+                ->willReturn(new LoadedValue(new Value($data, type: 'type')));
             $denormalizers[] = $denormalizer;
         }
 
-        $service = $this->createRealMockedServiceInstance(EntryNormalizer::class,['normalizers' => [],'denormalizers' => $denormalizers]);
+        $service = $this->createRealMockedServiceInstance(EntryNormalizer::class, ['normalizers' => [], 'denormalizers' => $denormalizers]);
 
         $result = $service->denormalize($input);
 
-        $this->assertInstanceOf(Entry::class,$result);
-        $this->assertSame($expected['objectId'],$result->getObjectId());
-        $this->assertSame($expected['action'],$result->getAction()->value);
-        $this->assertSame($expected['loggedAt'],$result->getLoggedAt()->format(EntryNormalizer::DATE_FORMAT_MICROTIME));
-        $this->assertSame($expected['documentId'],$result->getDocumentId());
-        $this->assertSame($expected['userIdentifier'],$result->getUserIdentifier());
-        $this->assertSame($expected['userIdentifierClass'],$result->getUserIdentifierClass());
+        static::assertInstanceOf(Entry::class, $result);
+        static::assertSame($expected['objectId'], $result->getObjectId());
+        static::assertSame($expected['action'], $result->getAction()->value);
+        static::assertSame($expected['loggedAt'], $result->getLoggedAt()->format(EntryNormalizer::DATE_FORMAT_MICROTIME));
+        static::assertSame($expected['documentId'], $result->getDocumentId());
+        static::assertSame($expected['userIdentifier'], $result->getUserIdentifier());
+        static::assertSame($expected['userIdentifierClass'], $result->getUserIdentifierClass());
 
-        if(!empty($input['changes'])){
-            foreach ($result->getChanges() as $index => $change){
-                $this->assertSame($expected['changes'][$index]['from']['value'],$change->getFrom()->value->value);
-                $this->assertSame($expected['changes'][$index]['to']['value'],$change->getTo()->value->value);
+        if (!empty($input['changes'])) {
+            foreach ($result->getChanges() as $index => $change) {
+                static::assertSame($expected['changes'][$index]['from']['value'], $change->getFrom()->value->value);
+                static::assertSame($expected['changes'][$index]['from']['type'], $change->getFrom()->value->type);
+                static::assertSame($expected['changes'][$index]['to']['value'], $change->getTo()->value->value);
+                static::assertSame($expected['changes'][$index]['to']['type'], $change->getTo()->value->type);
             }
         }
     }

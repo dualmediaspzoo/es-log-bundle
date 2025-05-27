@@ -3,9 +3,7 @@
 namespace DualMedia\EsLogBundle\Tests\Unit\Search;
 
 use DualMedia\EsLogBundle\Model\Entry;
-use DualMedia\EsLogBundle\Normalizer\EntityNormalizer;
 use DualMedia\EsLogBundle\Normalizer\EntryNormalizer;
-use DualMedia\EsLogBundle\Search\Builder;
 use DualMedia\EsLogBundle\Search\Processor;
 use Elastica\Query;
 use Elastica\Result;
@@ -14,7 +12,6 @@ use Elastica\Search;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
@@ -36,17 +33,17 @@ class ProcessorTest extends TestCase
     /**
      * @param list<array{id: int, source: string}> $resultData
      */
-    #[TestWith([[['id' => 1,'source' => 'source1'],['id' => 2,'source' => 'source2']],1,1,1])]
-    #[TestWith([[['id' => 1,'source' => 'source1']],10,2,10])]
+    #[TestWith([[['id' => 1, 'source' => 'source1'], ['id' => 2, 'source' => 'source2']], 1, 1, 1])]
+    #[TestWith([[['id' => 1, 'source' => 'source1']], 10, 2, 10])]
     public function testProcess(
         array $resultData,
         int $from,
         int $size,
         int $totalHints
-    ):void
-    {
+    ): void {
         $results = [];
         $entries = [];
+
         foreach ($resultData as $data) {
             $result = $this->createMock(Result::class);
             $result->expects(static::once())
@@ -60,7 +57,7 @@ class ProcessorTest extends TestCase
         }
 
         $this->getMockedService(EntryNormalizer::class)
-            ->expects($this->exactly(count($resultData)))
+            ->expects(static::exactly(count($resultData)))
             ->method('denormalize')
             ->willReturn(...$entries);
 
@@ -75,22 +72,22 @@ class ProcessorTest extends TestCase
         $query = $this->createMock(Query::class);
         $query->expects(static::exactly(2))
             ->method('getParam')
-            ->with($this->callback(fn ($key) => in_array($key, ['from', 'size'])))
-            ->willReturnOnConsecutiveCalls($size,$from);
+            ->with(static::callback(fn ($key) => in_array($key, ['from', 'size'])))
+            ->willReturnOnConsecutiveCalls($size, $from);
 
         $search = $this->createMock(Search::class);
         $search->expects(static::once())
             ->method('search')
             ->willReturn($resultSet);
-        $search->expects($this->once())
+        $search->expects(static::once())
             ->method('getQuery')
             ->willReturn($query);
 
         $result = $this->service->process($search);
-        $this->assertSame($entries, $result->entries);
-        $this->assertSame($totalHints, $result->total);
-        $this->assertSame($from / $size, $result->page);
-        $this->assertSame($from, $result->from);
-        $this->assertSame($size, $result->perPage);
+        static::assertSame($entries, $result->entries);
+        static::assertSame($totalHints, $result->total);
+        static::assertSame($from / $size, $result->page);
+        static::assertSame($from, $result->from);
+        static::assertSame($size, $result->perPage);
     }
 }

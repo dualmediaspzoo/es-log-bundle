@@ -2,7 +2,6 @@
 
 namespace DualMedia\EsLogBundle\Tests\Unit;
 
-use DualMedia\EsLogBundle\Search\Processor;
 use DualMedia\EsLogBundle\UserContext;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -19,16 +18,15 @@ class UserContextTest extends TestCase
 {
     use ServiceMockHelperTrait;
 
-    #[TestWith([true,true,true])]
-    #[TestWith([false,true,true])]
-    #[TestWith([false,false,false])]
-    #[TestWith([false,true,false])]
+    #[TestWith([true, true, true])]
+    #[TestWith([false, true, true])]
+    #[TestWith([false, false, false])]
+    #[TestWith([false, true, false])]
     public function testGetUser(
         bool $hasAlreadyUser,
         bool $hasToken,
         bool $hasUserFromToken
-    ): void
-    {
+    ): void {
         $alreadyUser = $this->createMock(UserInterface::class);
         $userFromToken = $this->createMock(UserInterface::class);
         $userContext = $this->createRealMockedServiceInstance(UserContext::class);
@@ -37,18 +35,18 @@ class UserContextTest extends TestCase
             ->willReturn($hasUserFromToken ? $userFromToken : null);
 
         $this->getMockedService(TokenStorageInterface::class)
-            ->expects($this->exactly(!$hasAlreadyUser))
+            ->expects(static::exactly(!$hasAlreadyUser))
             ->method('getToken')
             ->willReturn($hasToken ? $token : null);
 
-        if($hasAlreadyUser){
+        if ($hasAlreadyUser) {
             $userContext->setUser($alreadyUser);
         }
         $result = $userContext->getUser();
         match (true) {
             $hasAlreadyUser => static::assertSame($alreadyUser, $result),
             $hasUserFromToken && $hasToken => static::assertSame($userFromToken, $result),
-            default => static::assertSame(null, $result)
+            default => static::assertSame(null, $result),
         };
     }
 
@@ -56,8 +54,7 @@ class UserContextTest extends TestCase
     #[TestWith([false])]
     public function testSetUser(
         bool $hasUser = true
-    ): void
-    {
+    ): void {
         $user = $this->createMock(UserInterface::class);
         $userContext = $this->createRealMockedServiceInstance(UserContext::class);
         $userContext->setUser($hasUser ? $user : null);
