@@ -47,7 +47,7 @@ class LogStorageTest extends TestCase
     ])]
     public function testAppendAndProcess(
         array $entryData
-    ) {
+    ): void {
         $logStorage = new LogStorage();
 
         $expectedEntries = [];

@@ -2,6 +2,7 @@
 
 namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
 
+use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\IntNormalizer;
@@ -17,7 +18,10 @@ class IntNormalizerTest extends AbstractNormalizerTestCase
 {
     use ServiceMockHelperTrait;
 
-    protected IntNormalizer $service;
+    /**
+     * @var IntNormalizer
+     */
+    protected NormalizerInterface $service;
 
     protected function setUp(): void
     {

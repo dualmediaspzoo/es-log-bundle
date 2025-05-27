@@ -35,7 +35,7 @@ class UserContextTest extends TestCase
             ->willReturn($hasUserFromToken ? $userFromToken : null);
 
         $this->getMockedService(TokenStorageInterface::class)
-            ->expects(static::exactly(!$hasAlreadyUser))
+            ->expects(static::exactly((int)!$hasAlreadyUser))
             ->method('getToken')
             ->willReturn($hasToken ? $token : null);
 

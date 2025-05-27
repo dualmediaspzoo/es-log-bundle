@@ -17,24 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
 /**
- * @phpstan-type EntryData list<array{
- *      action: string,
- *      loggedAt: string,
- *      objectId: string,
- *      objectClass: string,
- *      changes: list<int,array{
- *          from: array{
- *              value: int,
- *              type: string
- *          },
- *          to: array{
- *              value: int,
- *              type: string
- *          }
- *      }>,
- *      userIdentifier: string|null,
- *      userIdentifierClass: string|null,
- *  }>
+ * @phpstan-import-type EntryDocument from EntryNormalizer
  */
 #[Group('unit')]
 #[Group('normalizer')]
@@ -44,7 +27,24 @@ class EntryNormalizerTest extends TestCase
     use ServiceMockHelperTrait;
 
     /**
-     * @param EntryData $expected
+     * @param array{
+     *       action: string,
+     *       loggedAt: string,
+     *       objectId: string,
+     *       objectClass: string,
+     *       changes: array<int,array{
+     *           from: array{
+     *               value: int,
+     *               type: string
+     *           },
+     *           to: array{
+     *               value: int,
+     *               type: string
+     *           }
+     *       }>,
+     *       userIdentifier: string|null,
+     *       userIdentifierClass: string|null,
+     *   } $expected
      * @param list<int|null> $normalizersData
      * @param list<int> $changesData
      */
@@ -151,8 +151,26 @@ class EntryNormalizerTest extends TestCase
     }
 
     /**
-     * @param EntryData $input
-     * @param EntryData $expected
+     * @param EntryDocument $input
+     * @param array{
+     *       action: string,
+     *       loggedAt: string,
+     *       objectId: string,
+     *       objectClass: string,
+     *       changes: array<int,array{
+     *           from: array{
+     *               value: int,
+     *               type: string
+     *           },
+     *           to: array{
+     *               value: int,
+     *               type: string
+     *           }
+     *       }>,
+     *       userIdentifier: string|null,
+     *       userIdentifierClass: string|null,
+     *       documentId: string
+     *   } $expected
      * @param list<int> $denormalizersData
      */
     #[TestWith([

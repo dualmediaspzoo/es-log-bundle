@@ -4,6 +4,7 @@ namespace DualMedia\EsLogBundle\Tests\Unit;
 
 use Doctrine\ORM\UnitOfWork;
 use DualMedia\EsLogBundle\ChangeSetProvider;
+use DualMedia\EsLogBundle\Metadata\ConfigProvider;
 use DualMedia\EsLogBundle\Tests\Resource\TestClass;
 use DualMedia\EsLogBundle\Tests\Resource\TestEnum;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -12,6 +13,9 @@ use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
+/**
+ * @phpstan-import-type MetadataConfig from ConfigProvider
+ */
 #[Group('unit')]
 #[CoversClass(ChangeSetProvider::class)]
 class ChangeSetProviderTest extends TestCase
@@ -27,7 +31,7 @@ class ChangeSetProviderTest extends TestCase
 
     /**
      * @param array<string,list<TestEnum>> $expected
-     * @param array{proporties: array<string,array{enumClass: TestEnum}>} $config
+     * @param MetadataConfig $config
      * @param array<string,list<string>> $changes
      */
     #[TestWith([
@@ -38,6 +42,9 @@ class ChangeSetProviderTest extends TestCase
             ],
         ],
         [
+            'trackCreate' => true,
+            'trackUpdate' => true,
+            'trackDelete' => true,
             'properties' => [
                 'field1' => [
                     'enumClass' => TestEnum::class,
@@ -60,6 +67,9 @@ class ChangeSetProviderTest extends TestCase
             ],
         ],
         [
+            'trackCreate' => true,
+            'trackUpdate' => true,
+            'trackDelete' => false,
             'properties' => [
                 'field1' => [
                     'enumClass' => TestEnum::class,

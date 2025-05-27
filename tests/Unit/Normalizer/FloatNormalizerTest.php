@@ -2,6 +2,7 @@
 
 namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
 
+use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\FloatNormalizer;
@@ -17,7 +18,10 @@ class FloatNormalizerTest extends AbstractNormalizerTestCase
 {
     use ServiceMockHelperTrait;
 
-    protected FloatNormalizer $service;
+    /**
+     * @var FloatNormalizer
+     */
+    protected NormalizerInterface $service;
 
     protected function setUp(): void
     {

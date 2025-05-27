@@ -4,8 +4,10 @@ namespace DualMedia\EsLogBundle\Tests\Unit\Search;
 
 use DualMedia\EsLogBundle\Model\Configuration;
 use DualMedia\EsLogBundle\Search\Builder;
+use DualMedia\EsLogBundle\Tests\Resource\TestClass;
 use Elastica\Client;
 use Elastica\Index;
+use Elastica\Query\AbstractQuery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -47,14 +49,19 @@ class BuilderTest extends TestCase
         $builder->start();
     }
 
+    /**
+     * @param class-string $className
+     */
     #[TestWith([])]
     public function testClass(
-        string $className = 'test'
+        string $className = TestClass::class
     ): void {
         $this->builder->start();
         $this->builder->class($className);
         $search = $this->builder->build();
-        static::assertSame($className, $search->getQuery()->getQuery()->getParam('filter')[0]->getParam('objectClass'));
+        /** @var AbstractQuery $query */
+        $query = $search->getQuery()->getQuery();
+        static::assertSame($className, $query->getParam('filter')[0]->getParam('objectClass'));
     }
 
     #[TestWith([])]
@@ -64,7 +71,9 @@ class BuilderTest extends TestCase
         $this->builder->start();
         $this->builder->id($id);
         $search = $this->builder->build();
-        static::assertSame($id, $search->getQuery()->getQuery()->getParam('filter')[0]->getParam('objectId'));
+        /** @var AbstractQuery $query */
+        $query = $search->getQuery()->getQuery();
+        static::assertSame($id, $query->getParam('filter')[0]->getParam('objectId'));
     }
 
     #[TestWith([])]
