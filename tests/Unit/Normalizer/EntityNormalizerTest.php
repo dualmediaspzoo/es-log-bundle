@@ -8,6 +8,8 @@ use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\EntityNormalizer;
 use DualMedia\EsLogBundle\Tests\Resource\TestClass;
+use DualMedia\EsLogBundle\Tests\Traits\Unit\DenormalizerTestCaseTrait;
+use DualMedia\EsLogBundle\Tests\Traits\Unit\NormalizerTestCaseTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -20,6 +22,8 @@ use Pkly\ServiceMockHelperTrait;
 class EntityNormalizerTest extends TestCase
 {
     use ServiceMockHelperTrait;
+    use NormalizerTestCaseTrait;
+    use DenormalizerTestCaseTrait;
 
     private EntityNormalizer $service;
 
@@ -31,8 +35,6 @@ class EntityNormalizerTest extends TestCase
     #[TestWith([1, new TestClass(1)])]
     #[TestWith([7, new TestClass(7)])]
     #[TestWith([null, new TestClass(1), false])]
-    #[TestWith([null, 'a'])]
-    #[TestWith([null, 1])]
     public function testNormalize(
         int|null $expected,
         mixed $value,
@@ -64,5 +66,23 @@ class EntityNormalizerTest extends TestCase
 
         $result = $this->service->denormalize($this->createMock(Entry::class), $field, new Value($value, metadata: ['isEntity' => $isEntity], type: $type));
         static::assertSame($expected, $result?->value->value->getId());
+    }
+
+    /**
+     * @return iterable<mixed>
+     */
+    public static function provideNormalizerNonSupportedCases(): iterable
+    {
+        yield ['a'];
+        yield [1];
+    }
+
+    /**
+     * @return iterable<mixed>
+     */
+    public static function provideDenormalizerNonSupportedCases(): iterable
+    {
+        yield ['a'];
+        yield [1];
     }
 }

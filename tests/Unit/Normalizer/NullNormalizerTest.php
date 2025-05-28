@@ -2,7 +2,6 @@
 
 namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
 
-use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\NullNormalizer;
@@ -21,10 +20,7 @@ class NullNormalizerTest extends TestCase
     use ServiceMockHelperTrait;
     use NormalizerTestCaseTrait;
 
-    /**
-     * @var NullNormalizer
-     */
-    protected NormalizerInterface $service;
+    protected NullNormalizer $service;
 
     protected function setUp(): void
     {
@@ -44,7 +40,17 @@ class NullNormalizerTest extends TestCase
     /**
      * @return iterable<mixed>
      */
-    public static function provideNonSupportedCases(): iterable
+    public static function provideNormalizerNonSupportedCases(): iterable
+    {
+        yield [true];
+        yield [false];
+        yield ['a'];
+    }
+
+    /**
+     * @return iterable<mixed>
+     */
+    public static function provideDenormalizerNonSupportedCases(): iterable
     {
         yield [true];
         yield [false];

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 trait DenormalizerTestCaseTrait
 {
-    #[DataProvider('provideNonSupportedCases')]
+    #[DataProvider('provideDenormalizerNonSupportedCases')]
     public function testDenormalizeUnsupported(
         mixed $value,
     ): void {
@@ -18,7 +18,7 @@ trait DenormalizerTestCaseTrait
     /**
      * @return iterable<mixed>
      */
-    public static function provideNonSupportedCases(): iterable
+    public static function provideDenormalizerNonSupportedCases(): iterable
     {
         throw new \LogicException('You must override this method');
     }
