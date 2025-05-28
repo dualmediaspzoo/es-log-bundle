@@ -7,17 +7,22 @@ use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\EnumNormalizer;
 use DualMedia\EsLogBundle\Tests\Resource\TestEnum;
+use DualMedia\EsLogBundle\Tests\Traits\Unit\DenormalizerTestCaseTrait;
+use DualMedia\EsLogBundle\Tests\Traits\Unit\NormalizerTestCaseTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
 #[Group('unit')]
 #[Group('normalizer')]
 #[CoversClass(EnumNormalizer::class)]
-class EnumNormalizerTest extends AbstractNormalizerTestCase
+class EnumNormalizerTest extends TestCase
 {
     use ServiceMockHelperTrait;
+    use NormalizerTestCaseTrait;
+    use DenormalizerTestCaseTrait;
 
     /**
      * @var EnumNormalizer
@@ -56,6 +61,9 @@ class EnumNormalizerTest extends AbstractNormalizerTestCase
         static::assertSame($expected, $result?->value->value->value);
     }
 
+    /**
+     * @return iterable<mixed>
+     */
     public static function provideNonSupportedCases(): iterable
     {
         yield ['a'];

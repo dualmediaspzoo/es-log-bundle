@@ -4,6 +4,7 @@ namespace DualMedia\EsLogBundle\Tests\Unit\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
 use DualMedia\EsLogBundle\ChangeSetProvider;
 use DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber;
@@ -125,5 +126,14 @@ class DoctrineSubscriberTest extends TestCase
             ->with(static::isInstanceOf(Entry::class), static::isInstanceOf(TestClass::class));
 
         $this->service->onFlush($eventArgs);
+    }
+
+    public function testPostFlush(): void
+    {
+        $this->getMockedService(LogStorage::class)
+            ->expects(static::once())
+            ->method('process');
+
+        $this->service->postFlush($this->createMock(PostFlushEventArgs::class));
     }
 }

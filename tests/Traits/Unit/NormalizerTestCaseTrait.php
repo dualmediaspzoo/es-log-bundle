@@ -1,16 +1,12 @@
 <?php
 
-namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
+namespace DualMedia\EsLogBundle\Tests\Traits\Unit;
 
-use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Entry;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-abstract class AbstractNormalizerTestCase extends TestCase
+trait NormalizerTestCaseTrait
 {
-    protected NormalizerInterface $service;
-
     #[DataProvider('provideNonSupportedCases')]
     public function testNormalizeUnsupported(
         mixed $value,
@@ -21,5 +17,8 @@ abstract class AbstractNormalizerTestCase extends TestCase
     /**
      * @return iterable<mixed>
      */
-    abstract public static function provideNonSupportedCases(): iterable;
+    public static function provideNonSupportedCases(): iterable
+    {
+        throw new \LogicException('You must override this method');
+    }
 }

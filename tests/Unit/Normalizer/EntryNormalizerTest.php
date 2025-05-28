@@ -152,25 +152,7 @@ class EntryNormalizerTest extends TestCase
 
     /**
      * @param EntryDocument $input
-     * @param array{
-     *       action: string,
-     *       loggedAt: string,
-     *       objectId: string,
-     *       objectClass: string,
-     *       changes: array<int,array{
-     *           from: array{
-     *               value: int,
-     *               type: string
-     *           },
-     *           to: array{
-     *               value: int,
-     *               type: string
-     *           }
-     *       }>,
-     *       userIdentifier: string|null,
-     *       userIdentifierClass: string|null,
-     *       documentId: string
-     *   } $expected
+     * @param EntryDocument $expected
      * @param list<int> $denormalizersData
      */
     #[TestWith([
@@ -279,11 +261,12 @@ class EntryNormalizerTest extends TestCase
 
         $result = $service->denormalize($input);
 
+        $documentId = $input['documentId'] ?? 'invalid';
         static::assertInstanceOf(Entry::class, $result);
         static::assertSame($expected['objectId'], $result->getObjectId());
         static::assertSame($expected['action'], $result->getAction()->value);
         static::assertSame($expected['loggedAt'], $result->getLoggedAt()->format(EntryNormalizer::DATE_FORMAT_MICROTIME));
-        static::assertSame($expected['documentId'], $result->getDocumentId());
+        static::assertSame($documentId, $result->getDocumentId());
         static::assertSame($expected['userIdentifier'], $result->getUserIdentifier());
         static::assertSame($expected['userIdentifierClass'], $result->getUserIdentifierClass());
 

@@ -6,17 +6,20 @@ use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Model\Value;
 use DualMedia\EsLogBundle\Normalizer\BoolNormalizer;
+use DualMedia\EsLogBundle\Tests\Traits\Unit\NormalizerTestCaseTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
 
 #[Group('unit')]
 #[Group('normalizer')]
 #[CoversClass(BoolNormalizer::class)]
-class BoolNormalizerTest extends AbstractNormalizerTestCase
+class BoolNormalizerTest extends TestCase
 {
     use ServiceMockHelperTrait;
+    use NormalizerTestCaseTrait;
 
     /**
      * @var BoolNormalizer
@@ -40,6 +43,9 @@ class BoolNormalizerTest extends AbstractNormalizerTestCase
         static::assertSame($expected, $result->value);
     }
 
+    /**
+     * @return iterable<mixed>
+     */
     public static function provideNonSupportedCases(): iterable
     {
         yield ['a'];
