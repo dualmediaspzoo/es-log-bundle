@@ -23,8 +23,9 @@ class Processor
             $entries[] = $this->normalizer->denormalize([...$result->getSource(), 'documentId' => $result->getId()]); // @phpstan-ignore-line
         }
 
-        $size = $search->getQuery()->getParam('size');
-        $from = $search->getQuery()->getParam('from');
+        $query = $search->getQuery();
+        $size = $query->getParam('size');
+        $from = $query->getParam('from');
 
         return new Results(
             $entries,
