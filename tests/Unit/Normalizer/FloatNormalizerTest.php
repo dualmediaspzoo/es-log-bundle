@@ -30,7 +30,7 @@ class FloatNormalizerTest extends TestCase
     #[TestWith([1.1, 1.1])]
     #[TestWith([2.23, 2.23])]
     public function testNormalize(
-        float|null $expected,
+        float $expected,
         mixed $value,
         string $field = 'test'
     ): void {

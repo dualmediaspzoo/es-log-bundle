@@ -30,7 +30,7 @@ class BoolNormalizerTest extends TestCase
     #[TestWith([true, true])]
     #[TestWith([false, false])]
     public function testNormalize(
-        bool|null $expected,
+        bool $expected,
         mixed $value,
         string $field = 'test'
     ): void {

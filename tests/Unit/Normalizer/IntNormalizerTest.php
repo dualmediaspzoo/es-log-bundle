@@ -30,7 +30,7 @@ class IntNormalizerTest extends TestCase
     #[TestWith([1, 1])]
     #[TestWith([100, 100])]
     public function testNormalize(
-        int|null $expected,
+        int $expected,
         mixed $value,
         string $field = 'test'
     ): void {

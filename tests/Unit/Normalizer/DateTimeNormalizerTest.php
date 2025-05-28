@@ -31,7 +31,7 @@ class DateTimeNormalizerTest extends TestCase
 
     #[TestWith(['2025-05-26T07:28:18+00:00', new \DateTime('2025-05-26T07:28:18+00:00')])]
     public function testNormalize(
-        string|null $expected,
+        string $expected,
         mixed $value,
         string $field = 'test'
     ): void {
@@ -42,7 +42,7 @@ class DateTimeNormalizerTest extends TestCase
 
     #[TestWith(['2025-05-26 07:28:18', new \DateTime('2025-05-26 07:28:18'), \DateTimeImmutable::class])]
     public function testDenormalize(
-        string|null $expected,
+        string $expected,
         mixed $value,
         string $type,
         string $field = 'test'

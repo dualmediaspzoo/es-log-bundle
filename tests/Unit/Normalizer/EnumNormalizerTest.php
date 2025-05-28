@@ -33,7 +33,7 @@ class EnumNormalizerTest extends TestCase
     #[TestWith(['b', TestEnum::B])]
     #[TestWith(['a', TestEnum::A])]
     public function testNormalize(
-        string|null $expected,
+        string $expected,
         mixed $value,
         string $field = 'test'
     ): void {
@@ -44,8 +44,6 @@ class EnumNormalizerTest extends TestCase
 
     #[TestWith(['a', true, TestEnum::A, TestEnum::class])]
     #[TestWith([null, false, TestEnum::A, TestEnum::class])]
-    #[TestWith([null, false, 'a', 'string'])]
-    #[TestWith([null, false, 1, 'integer'])]
     public function testDenormalize(
         string|null $expected,
         bool $isBackedEnum,

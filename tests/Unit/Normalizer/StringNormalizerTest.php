@@ -30,7 +30,7 @@ class StringNormalizerTest extends TestCase
     #[TestWith(['abc', 'abc'])]
     #[TestWith(['', ''])]
     public function testNormalize(
-        string|null $expected,
+        string $expected,
         mixed $value,
         string $field = 'test'
     ): void {
