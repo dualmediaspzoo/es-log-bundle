@@ -3,6 +3,7 @@
 namespace DualMedia\EsLogBundle\Normalizer;
 
 use DualMedia\EsLogBundle\Enum\ActionEnum;
+use DualMedia\EsLogBundle\Enum\TypeEnum;
 use DualMedia\EsLogBundle\Interface\DenormalizerInterface;
 use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Change;
@@ -14,13 +15,15 @@ use DualMedia\EsLogBundle\Trait\UtcTrait;
 /**
  * @phpstan-type EntryDocument array{
  *      action: string,
+ *      type: string,
  *      loggedAt: string,
  *      objectId: string,
  *      objectClass: string,
  *      changes: array<string, mixed>,
  *      userIdentifier: string|null,
  *      userIdentifierClass: string|null,
- *      documentId?: string
+ *      documentId?: string,
+ *      metadata: array<string, mixed>
  *  }
  */
 class EntryNormalizer
@@ -68,6 +71,7 @@ class EntryNormalizer
 
         return [
             'action' => $entry->getAction()->value,
+            'type' => $entry->getType()->value,
             'loggedAt' => \DateTimeImmutable::createFromInterface($entry->getLoggedAt())
                 ->setTimezone($this->getUtc())
                 ->format(self::DATE_FORMAT_MICROTIME),
@@ -76,6 +80,7 @@ class EntryNormalizer
             'changes' => $changes,
             'userIdentifier' => $entry->getUserIdentifier(),
             'userIdentifierClass' => $entry->getUserIdentifierClass(),
+            'metadata' => $entry->getMetadata(),
         ];
     }
 
@@ -88,6 +93,7 @@ class EntryNormalizer
         array $input
     ): Entry {
         $action = ActionEnum::from($input['action']);
+        $type = TypeEnum::from($input['type']);
         $loggedAt = \DateTimeImmutable::createFromFormat(self::DATE_FORMAT_MICROTIME, $input['loggedAt'], $this->getUtc());
         /** @var \DateTimeImmutable $loggedAt */
         $objectId = $input['objectId'];
@@ -95,6 +101,7 @@ class EntryNormalizer
         $userIdentifier = $input['userIdentifier'];
         $userIdentifierClass = $input['userIdentifierClass'];
         $documentId = $input['documentId'] ?? null;
+        $metadata = $input['metadata'];
 
         $changes = [];
 
@@ -110,11 +117,13 @@ class EntryNormalizer
 
         $entry = new Entry(
             $action,
+            $type,
             $objectId,
             $objectClass,
             [],
             $userIdentifier,
             $userIdentifierClass,
+            $metadata,
             $loggedAt,
             $documentId
         );

@@ -6,8 +6,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\ObjectManager;
 use DualMedia\EsLogBundle\ChangeSetProvider;
+use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber;
+use DualMedia\EsLogBundle\LogCreator;
 use DualMedia\EsLogBundle\LogStorage;
 use DualMedia\EsLogBundle\Metadata\ConfigProvider;
 use DualMedia\EsLogBundle\Model\Entry;
@@ -34,98 +37,77 @@ class DoctrineSubscriberTest extends TestCase
         $this->service = $this->createRealMockedServiceInstance(DoctrineSubscriber::class);
     }
 
-    /**
-     * @param list<int> $entityInsertionsData
-     * @param list<int> $entityUpdatesData
-     * @param list<int> $entityDeletionsData
-     */
-    #[TestWith([[1, 2], [1], [1, 2, 3]])]
-    #[TestWith([[1, 2], [1], [1, 2, 3], false])]
-    #[TestWith([[1, 2], [1], [1, 2, 3], true, false])]
-    #[TestWith([[1, 2], [1], [1, 2, 3], false, false])]
+    #[TestWith([0, 0, 0])]
+    #[TestWith([1, 1, 1])]
+    #[TestWith([123, 0, 0])]
+    #[TestWith([0, 22, 0])]
+    #[TestWith([0, 0, 50])]
     public function testOnFlush(
-        array $entityInsertionsData,
-        array $entityUpdatesData,
-        array $entityDeletionsData,
-        bool $hasConfig = true,
-        bool $hasChanges = true,
+        int $insertions,
+        int $updates,
+        int $deletions
     ): void {
-        $entityInsertions = [];
-        $entityUpdates = [];
-        $entityDeletions = [];
-
-        foreach ($entityInsertionsData as $data) {
-            $entity = $this->createMock(TestClass::class);
-            $entity->expects(static::atMost(2))
-                ->method('getId')
-                ->willReturn($data);
-
-            $entityInsertions[$data] = $entity;
-        }
-
-        foreach ($entityUpdatesData as $data) {
-            $entity = $this->createMock(TestClass::class);
-            $entity->expects(static::atMost(2))
-                ->method('getId')
-                ->willReturn($data);
-
-            $entityUpdates[$data] = $entity;
-        }
-
-        foreach ($entityDeletionsData as $data) {
-            $entity = $this->createMock(TestClass::class);
-            $entity->expects(static::atMost(2))
-                ->method('getId')
-                ->willReturn($data);
-
-            $entityDeletions[$data] = $entity;
-        }
-
+        $event = $this->createMock(OnFlushEventArgs::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $uow = $this->createMock(UnitOfWork::class);
-        $uow->expects(static::once())
-            ->method('getScheduledEntityInsertions')
-            ->willReturn($entityInsertions);
-        $uow->expects(static::once())
-            ->method('getScheduledEntityDeletions')
-            ->willReturn($entityDeletions);
-        $uow->expects(static::once())
-            ->method('getScheduledEntityUpdates')
-            ->willReturn($entityUpdates);
 
-        $om = $this->createMock(EntityManagerInterface::class);
-        $om->expects(static::once())
+        $event->expects(static::once())
+            ->method('getObjectManager')
+            ->willReturn($manager);
+
+        $manager->expects(static::once())
             ->method('getUnitOfWork')
             ->willReturn($uow);
 
-        $eventArgs = $this->createMock(OnFlushEventArgs::class);
-        $eventArgs->expects(static::once())
-            ->method('getObjectManager')
-            ->willReturn($om);
-
         $user = $this->createMock(UserInterface::class);
-        $user->method('getUserIdentifier')
-            ->willReturn('user_id');
 
         $this->getMockedService(UserContext::class)
+            ->expects(static::once())
             ->method('getUser')
             ->willReturn($user);
 
-        $this->getMockedService(ConfigProvider::class)
-            ->method('provide')
-            ->willReturn($hasConfig ? ['trackCreate' => true, 'trackUpdate' => true, 'trackRemove' => true] : null);
+        $mockInsert = $mockUpdate = $mockDelete = [];
 
-        $this->getMockedService(ChangeSetProvider::class)
-            ->method('provide')
-            ->willReturn($hasChanges ? ['changes'] : []);
+        for ($i = 0; $i < $insertions; $i++) {
+            $mockInsert[] = $this->createMock(\stdClass::class);
+        }
 
-        $allEntityActions = array_merge_recursive($entityDeletionsData, $entityInsertionsData, $entityUpdatesData);
+        for ($i = 0; $i < $updates; $i++) {
+            $mockUpdate[] = $this->createMock(\stdClass::class);
+        }
 
-        $this->getMockedService(LogStorage::class)
-            ->expects(static::exactly($hasConfig ? count($allEntityActions) : 0))
-            ->method('append')
-            ->with(static::isInstanceOf(Entry::class), static::isInstanceOf(TestClass::class));
+        for ($i = 0; $i < $deletions; $i++) {
+            $mockDelete[] = $this->createMock(\stdClass::class);
+        }
 
-        $this->service->onFlush($eventArgs);
+        $joined = array_merge(
+            $mockInsert,
+            $mockUpdate,
+            $mockDelete,
+        );
+
+        $uow->expects(static::once())
+            ->method('getScheduledEntityInsertions')
+            ->willReturn($mockInsert);
+
+        $uow->expects(static::once())
+            ->method('getScheduledEntityUpdates')
+            ->willReturn($mockUpdate);
+
+        $uow->expects(static::once())
+            ->method('getScheduledEntityDeletions')
+            ->willReturn($mockDelete);
+
+        $this->getMockedService(LogCreator::class)
+            ->expects($invoke = static::exactly($insertions + $updates + $deletions))
+            ->method('create')
+            ->with(static::isInstanceOf(ActionEnum::class), static::callback(function ($o) use ($invoke, $joined): bool {
+                $counter = $invoke->numberOfInvocations() - 1;
+
+                return $joined[$counter] === $o;
+            }), $uow, $user);
+
+        $this->service->onFlush($event);
     }
 
     public function testPostFlush(): void

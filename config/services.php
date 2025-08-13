@@ -25,21 +25,30 @@ return static function (ContainerConfigurator $configurator) {
         ->arg('$client', new Reference('.dualmedia.log.client'))
         ->tag('console.command');
 
-    $services->set(\DualMedia\EsLogBundle\LogStorage::class);
+    $services->set(\DualMedia\EsLogBundle\LogStorage::class)
+        ->arg('$eventDispatcher', new Reference('event_dispatcher'));
 
     $services->set(\DualMedia\EsLogBundle\ChangeSetProvider::class);
 
-    $services->set(\DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber::class)
+    $services->set(\DualMedia\EsLogBundle\LogCreator::class)
         ->arg('$configProvider', new Reference(\DualMedia\EsLogBundle\Metadata\ConfigProvider::class))
-        ->arg('$context', new Reference(\DualMedia\EsLogBundle\UserContext::class))
         ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
         ->arg('$changeSetProvider', new Reference(\DualMedia\EsLogBundle\ChangeSetProvider::class))
+        ->arg('$eventDispatcher', new Reference('event_dispatcher'));
+
+    $services->set(\DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber::class)
+        ->arg('$context', new Reference(\DualMedia\EsLogBundle\UserContext::class))
+        ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
+        ->arg('$creator', new Reference(\DualMedia\EsLogBundle\LogCreator::class))
         ->tag('doctrine.event_listener', [
             'event' => Events::onFlush,
         ])
         ->tag('doctrine.event_listener', [
             'event' => Events::postFlush,
         ]);
+
+    $services->set(\DualMedia\EsLogBundle\EventSubscriber\MetadataSubscriber::class)
+        ->tag('kernel.event_subscriber');
 
     $services->set(\DualMedia\EsLogBundle\EventSubscriber\SaveSubscriber::class)
         ->arg('$configuration', new Reference('.dualmedia.log.configuration'))
