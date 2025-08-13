@@ -18,6 +18,13 @@ class LogStorageTest extends TestCase
 {
     use ServiceMockHelperTrait;
 
+    private LogStorage $service;
+
+    protected function setUp(): void
+    {
+        $this->service = $this->createRealMockedServiceInstance(LogStorage::class);
+    }
+
     /**
      * @param list<array{enum: ActionEnum, id: int}> $entryData
      */
@@ -48,8 +55,6 @@ class LogStorageTest extends TestCase
     public function testAppendAndProcess(
         array $entryData
     ): void {
-        $logStorage = new LogStorage();
-
         $expectedEntries = [];
 
         foreach ($entryData as $data) {
@@ -64,11 +69,11 @@ class LogStorageTest extends TestCase
                 ->willReturn($data['id']);
 
             $expectedEntries[] = $entryWithId;
-            $logStorage->append($entry, $object);
+            $this->service->append($entry, $object);
         }
 
-        $logStorage->process();
+        $this->service->process();
 
-        static::assertEquals($expectedEntries, $logStorage->getEntries());
+        static::assertEquals($expectedEntries, $this->service->getEntries());
     }
 }
