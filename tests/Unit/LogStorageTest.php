@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[Group('unit')]
 #[CoversClass(LogStorage::class)]
@@ -71,6 +72,10 @@ class LogStorageTest extends TestCase
             $expectedEntries[] = $entryWithId;
             $this->service->append($entry, $object);
         }
+
+        $this->getMockedService(EventDispatcherInterface::class)
+            ->method('dispatch')
+            ->willReturnArgument(0);
 
         $this->service->process();
 
