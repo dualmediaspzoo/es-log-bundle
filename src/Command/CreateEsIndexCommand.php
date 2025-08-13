@@ -45,7 +45,7 @@ class CreateEsIndexCommand extends Command
                     'metadata' => ['type' => 'object'],
                 ],
             ],
-        ], true);
+        ]);
 
         $output->writeln('Index created successfully.');
 
