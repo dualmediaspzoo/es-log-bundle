@@ -36,15 +36,14 @@ class MetadataSubscriber implements EventSubscriberInterface
             ];
         }
 
-        $metadata['objectIds']['object'] = [];
+        $object = $event->getObject();
+
+        $metadata['objectIds']['object'] = [
+            'class' => EsLogBundle::getRealClass(get_class($object)),
+        ];
 
         if (!$entry->getAction()->isCreate()) {
-            $object = $event->getObject();
-
-            $metadata['objectIds']['object'] = [
-                'class' => EsLogBundle::getRealClass(get_class($object)),
-                'id' => (string)$object->getId(), // @phpstan-ignore-line
-            ];
+            $metadata['objectIds']['object']['id'] = (string)$object->getId(); // @phpstan-ignore-line
         }
 
         $event->setEntry($entry->withMetadata($metadata));
@@ -56,7 +55,7 @@ class MetadataSubscriber implements EventSubscriberInterface
         $entry = $event->getEntry();
         $metadata = $entry->getMetadata();
 
-        $metadata['objectIds']['object']['id'] = $event->getObject()->getId(); // @phpstan-ignore-line
+        $metadata['objectIds']['object']['id'] = (string)$event->getObject()->getId(); // @phpstan-ignore-line
 
         $event->setEntry($entry->withMetadata($metadata));
     }
