@@ -47,7 +47,7 @@ class LogCreator
 
         $changes = [];
 
-        if (ActionEnum::Update === $action && !empty($config['properties'])) {
+        if ($action->isUpdate() && !empty($config['properties'])) {
             $changes = $this->changeSetProvider->provide($uow, $config, $object);
 
             if (empty($changes)) {
