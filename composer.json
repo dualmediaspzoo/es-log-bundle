@@ -4,16 +4,19 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
+        "logs",
         "logging",
         "elasticsearch",
-        "symfony"
+        "symfony",
+        "doctrine",
+        "orm"
     ],
     "require": {
         "php": "^8.3",
-        "symfony/framework-bundle": "^6.4",
-        "symfony/cache": "^6.4",
-        "symfony/security-bundle": "^6.4",
-        "ruflin/elastica": "^7.1",
+        "symfony/framework-bundle": "^6.4 || ^7.3",
+        "symfony/security-bundle": "^6.4 || ^7.3",
+        "symfony/event-dispatcher": "^6.4 || ^7.3",
+        "ruflin/elastica": "^7.1 || ^8",
         "doctrine/orm": "^2.15 || ^3"
     },
     "require-dev": {
@@ -59,5 +62,10 @@
     "minimum-stability": "stable",
     "conflict": {
         "easycorp/easyadmin-bundle": "<4.14 || ^5"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
     }
 }

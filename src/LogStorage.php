@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DualMedia\EsLogBundle;
 
+use DualMedia\EsLogBundle\Event\LogProcessedEvent;
 use DualMedia\EsLogBundle\Model\Entry;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class LogStorage
 {
@@ -21,6 +23,11 @@ class LogStorage
      * @var array<int, object>
      */
     private array $entityReferences = [];
+
+    public function __construct(
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
+    }
 
     /**
      * @param Entry<mixed> $entry
@@ -47,12 +54,17 @@ class LogStorage
                 continue;
             }
 
-            $value = $this->entityReferences[$i]->getId(); // @phpstan-ignore-line
-            $this->entries[$i] = $entry->withId(match ($value) {
+            $entity = $this->entityReferences[$i];
+            $value = $entity->getId(); // @phpstan-ignore-line
+
+            $entry = $entry->withId(match ($value) {
                 null => null,
                 default => (string)$value,
             });
 
+            $event = $this->eventDispatcher->dispatch(new LogProcessedEvent($entity, $entry));
+
+            $this->entries[$i] = $event->getEntry();
             $this->entityReferences[$i] = null; // remove reference
         }
 

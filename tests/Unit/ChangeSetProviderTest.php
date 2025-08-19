@@ -37,7 +37,7 @@ class ChangeSetProviderTest extends TestCase
      * @param MetadataConfig $config
      * @param Changes $changes
      */
-    #[DataProvider('provideDataProvider')]
+    #[DataProvider('provideProvideCases')]
     public function testProvide(
         array $expected,
         array $config,
@@ -72,7 +72,7 @@ class ChangeSetProviderTest extends TestCase
     /**
      * @return iterable<array{Expected, MetadataConfig, Changes}>
      */
-    public static function provideDataProvider(): iterable
+    public static function provideProvideCases(): iterable
     {
         yield [
             [

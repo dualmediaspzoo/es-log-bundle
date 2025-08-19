@@ -15,6 +15,16 @@ enum ActionEnum: string
         return self::Create === $this;
     }
 
+    public function isUpdate(): bool
+    {
+        return self::Update === $this;
+    }
+
+    public function isRemove(): bool
+    {
+        return self::Remove === $this;
+    }
+
     public function getConfigKey(): string
     {
         return 'track'.$this->name;

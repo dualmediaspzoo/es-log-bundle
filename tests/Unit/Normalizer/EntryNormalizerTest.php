@@ -3,6 +3,7 @@
 namespace DualMedia\EsLogBundle\Tests\Unit\Normalizer;
 
 use DualMedia\EsLogBundle\Enum\ActionEnum;
+use DualMedia\EsLogBundle\Enum\TypeEnum;
 use DualMedia\EsLogBundle\Interface\DenormalizerInterface;
 use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Change;
@@ -51,17 +52,20 @@ class EntryNormalizerTest extends TestCase
     #[TestWith([
         [
             'action' => 'create',
+            'type' => 'automatic',
             'loggedAt' => '2025-05-26T00:00:00.000000',
             'objectId' => '1',
             'objectClass' => 'TestClass',
             'changes' => [],
             'userIdentifier' => null,
             'userIdentifierClass' => null,
+            'metadata' => [],
         ],
     ])]
     #[TestWith([
         [
             'action' => 'update',
+            'type' => 'automatic',
             'loggedAt' => '2025-05-27T00:00:00.000000',
             'objectId' => '7',
             'objectClass' => 'TestClass1',
@@ -89,6 +93,7 @@ class EntryNormalizerTest extends TestCase
             ],
             'userIdentifier' => '11',
             'userIdentifierClass' => 'UserClass',
+            'metadata' => [],
         ],
         [1, 1],
         [1, 1],
@@ -136,6 +141,8 @@ class EntryNormalizerTest extends TestCase
             ->willReturn($changes);
         $entry->method('getAction')
             ->willReturn($actionEnum);
+        $entry->method('getType')
+            ->willReturn(TypeEnum::Automatic);
         $entry->method('getLoggedAt')
             ->willReturn($loggedAt);
         $entry->method('getObjectId')
@@ -158,6 +165,7 @@ class EntryNormalizerTest extends TestCase
     #[TestWith([
         [
             'action' => 'create',
+            'type' => 'automatic',
             'loggedAt' => '2025-05-26T00:00:00.000000',
             'objectId' => '1',
             'objectClass' => 'TestClass',
@@ -186,9 +194,11 @@ class EntryNormalizerTest extends TestCase
             'userIdentifier' => null,
             'userIdentifierClass' => null,
             'documentId' => '1',
+            'metadata' => [],
         ],
         [
             'action' => 'create',
+            'type' => 'automatic',
             'loggedAt' => '2025-05-26T00:00:00.000000',
             'objectId' => '1',
             'objectClass' => 'TestClass',
@@ -217,12 +227,14 @@ class EntryNormalizerTest extends TestCase
             'userIdentifier' => null,
             'userIdentifierClass' => null,
             'documentId' => '1',
+            'metadata' => [],
         ],
         [1, 1],
     ])]
     #[TestWith([
         [
             'action' => 'update',
+            'type' => 'automatic',
             'loggedAt' => '2025-05-26T00:00:00.000000',
             'objectId' => '1',
             'objectClass' => 'TestClass',
@@ -230,9 +242,11 @@ class EntryNormalizerTest extends TestCase
             'userIdentifier' => '1',
             'userIdentifierClass' => '1',
             'documentId' => '1',
+            'metadata' => [],
         ],
         [
             'action' => 'update',
+            'type' => 'automatic',
             'loggedAt' => '2025-05-26T00:00:00.000000',
             'objectId' => '1',
             'objectClass' => 'TestClass',
@@ -240,6 +254,7 @@ class EntryNormalizerTest extends TestCase
             'userIdentifier' => '1',
             'userIdentifierClass' => '1',
             'documentId' => '1',
+            'metadata' => [],
         ],
         [],
     ])]

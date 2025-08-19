@@ -32,6 +32,7 @@ class CreateEsIndexCommand extends Command
             'mappings' => [
                 'properties' => [
                     'action' => ['type' => 'keyword'],
+                    'type' => ['type' => 'keyword'],
                     'loggedAt' => [
                         'type' => 'date',
                         'format' => 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS',
@@ -41,9 +42,10 @@ class CreateEsIndexCommand extends Command
                     'changes' => ['type' => 'object'],
                     'userIdentifier' => ['type' => 'keyword'],
                     'userIdentifierClass' => ['type' => 'keyword'],
+                    'metadata' => ['type' => 'object'],
                 ],
             ],
-        ], true);
+        ]);
 
         $output->writeln('Index created successfully.');
 

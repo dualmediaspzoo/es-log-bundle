@@ -11,12 +11,20 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Pkly\ServiceMockHelperTrait;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[Group('unit')]
 #[CoversClass(LogStorage::class)]
 class LogStorageTest extends TestCase
 {
     use ServiceMockHelperTrait;
+
+    private LogStorage $service;
+
+    protected function setUp(): void
+    {
+        $this->service = $this->createRealMockedServiceInstance(LogStorage::class);
+    }
 
     /**
      * @param list<array{enum: ActionEnum, id: int}> $entryData
@@ -48,8 +56,6 @@ class LogStorageTest extends TestCase
     public function testAppendAndProcess(
         array $entryData
     ): void {
-        $logStorage = new LogStorage();
-
         $expectedEntries = [];
 
         foreach ($entryData as $data) {
@@ -64,11 +70,15 @@ class LogStorageTest extends TestCase
                 ->willReturn($data['id']);
 
             $expectedEntries[] = $entryWithId;
-            $logStorage->append($entry, $object);
+            $this->service->append($entry, $object);
         }
 
-        $logStorage->process();
+        $this->getMockedService(EventDispatcherInterface::class)
+            ->method('dispatch')
+            ->willReturnArgument(0);
 
-        static::assertEquals($expectedEntries, $logStorage->getEntries());
+        $this->service->process();
+
+        static::assertEquals($expectedEntries, $this->service->getEntries());
     }
 }
