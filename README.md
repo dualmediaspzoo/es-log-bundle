@@ -1,3 +1,5 @@
+[![Packagist Downloads](https://img.shields.io/packagist/dt/dualmedia/es-log-bundle)](https://packagist.org/packages/dualmedia/es-log-bundle)
+
 # ElasticSearch Log Bundle
 
 A Symfony Bundle for tracking changes and history of objects.
