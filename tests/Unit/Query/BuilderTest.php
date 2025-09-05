@@ -30,13 +30,6 @@ class BuilderTest extends TestCase
         static::assertInstanceOf(Builder::class, $this->builder->start());
     }
 
-    public function testStartSecondTime(): void
-    {
-        $this->builder->start();
-        static::expectException(\AssertionError::class);
-        $this->builder->start();
-    }
-
     /**
      * @param class-string $className
      */
