@@ -4,6 +4,7 @@ use Doctrine\ORM\Events;
 use DualMedia\EsLogBundle\EsLogBundle as Bundle;
 use Symfony\Component\DependencyInjection\Argument\AbstractArgument;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -55,10 +56,11 @@ return static function (ContainerConfigurator $configurator) {
         ->arg('$client', new Reference('.dualmedia.log.client'))
         ->arg('$normalizer', new Reference(\DualMedia\EsLogBundle\Normalizer\EntryNormalizer::class))
         ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
+        ->arg('$logger', new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE))
         ->tag('kernel.event_subscriber');
 
     $services->set(\DualMedia\EsLogBundle\UserContext::class)
-        ->arg('$tokenStorage', new Reference('security.token_storage', \Symfony\Component\DependencyInjection\ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        ->arg('$tokenStorage', new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE));
 
     $services->set(\DualMedia\EsLogBundle\Metadata\ConfigProvider::class)
         ->arg('$config', new AbstractArgument('Set through configuration'));
@@ -105,6 +107,6 @@ return static function (ContainerConfigurator $configurator) {
 
     // optional EasyAdmin integration
     $services->set(\DualMedia\EsLogBundle\EasyAdmin\Field\LogEntryConfigurator::class)
-        ->arg('$adminUrlGenerator', new Reference('EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator', \Symfony\Component\DependencyInjection\ContainerInterface::NULL_ON_INVALID_REFERENCE))
+        ->arg('$adminUrlGenerator', new Reference('EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator', ContainerInterface::NULL_ON_INVALID_REFERENCE))
         ->tag('ea.field_configurator');
 };

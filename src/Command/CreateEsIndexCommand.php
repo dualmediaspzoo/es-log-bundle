@@ -42,7 +42,7 @@ class CreateEsIndexCommand extends Command
                     'changes' => ['type' => 'object'],
                     'userIdentifier' => ['type' => 'keyword'],
                     'userIdentifierClass' => ['type' => 'keyword'],
-                    'metadata' => ['type' => 'object'],
+                    'metadata' => ['type' => 'object', 'enabled' => 'false'],
                 ],
             ],
         ]);
