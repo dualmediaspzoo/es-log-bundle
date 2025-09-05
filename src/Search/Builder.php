@@ -2,12 +2,10 @@
 
 namespace DualMedia\EsLogBundle\Search;
 
-use DualMedia\EsLogBundle\EsLogBundle;
 use DualMedia\EsLogBundle\Model\Configuration;
 use Elastica\Client;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
-use Elastica\Query\Term;
 use Elastica\Search;
 
 class Builder
@@ -43,29 +41,12 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param class-string $className
-     */
-    public function class(
-        string $className
+    public function query(
+        BoolQuery $query
     ): self {
         assert(null !== $this->search);
 
-        $this->filters->addFilter(new Term([
-            'objectClass' => EsLogBundle::getRealClass($className),
-        ]));
-
-        return $this;
-    }
-
-    public function id(
-        string|int $id
-    ): self {
-        assert(null !== $this->search);
-
-        $this->filters->addFilter(new Term([
-            'objectId' => $id,
-        ]));
+        $this->filters = $query;
 
         return $this;
     }
