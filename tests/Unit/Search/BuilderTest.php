@@ -3,6 +3,7 @@
 namespace DualMedia\EsLogBundle\Tests\Unit\Search;
 
 use DualMedia\EsLogBundle\Model\Configuration;
+use DualMedia\EsLogBundle\Query\Builder as QueryBuilder;
 use DualMedia\EsLogBundle\Search\Builder;
 use DualMedia\EsLogBundle\Tests\Resource\TestClass;
 use Elastica\Client;
@@ -53,27 +54,15 @@ class BuilderTest extends TestCase
      * @param class-string $className
      */
     #[TestWith([])]
-    public function testClass(
+    public function testQuery(
         string $className = TestClass::class
     ): void {
         $this->builder->start();
-        $this->builder->class($className);
+        $this->builder->query((new QueryBuilder())->start()->class($className)->build());
         $search = $this->builder->build();
         /** @var AbstractQuery $query */
         $query = $search->getQuery()->getQuery();
         static::assertSame($className, $query->getParam('filter')[0]->getParam('objectClass'));
-    }
-
-    #[TestWith([])]
-    public function testId(
-        string|int $id = 1
-    ): void {
-        $this->builder->start();
-        $this->builder->id($id);
-        $search = $this->builder->build();
-        /** @var AbstractQuery $query */
-        $query = $search->getQuery()->getQuery();
-        static::assertSame($id, $query->getParam('filter')[0]->getParam('objectId'));
     }
 
     #[TestWith([])]

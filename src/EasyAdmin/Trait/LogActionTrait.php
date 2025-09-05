@@ -3,6 +3,7 @@
 namespace DualMedia\EsLogBundle\EasyAdmin\Trait;
 
 use DualMedia\EsLogBundle\EasyAdmin\ElasticPaginator;
+use DualMedia\EsLogBundle\Query\Builder as QueryBuilder;
 use DualMedia\EsLogBundle\Search\Builder;
 use DualMedia\EsLogBundle\Search\Processor;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -19,6 +20,7 @@ use Twig\Environment;
 trait LogActionTrait
 {
     protected Builder $logsBuilder;
+    protected QueryBuilder $queryBuilder;
     protected Processor $logsProcessor;
     protected AdminUrlGeneratorInterface $logsAdminUrlGenerator;
 
@@ -26,11 +28,13 @@ trait LogActionTrait
     public function setListLogsServices(
         Builder $builder,
         Processor $processor,
-        AdminUrlGenerator $generator
+        AdminUrlGenerator $generator,
+        QueryBuilder $queryBuilder
     ): void {
         $this->logsBuilder = $builder;
         $this->logsProcessor = $processor;
         $this->logsAdminUrlGenerator = $generator;
+        $this->queryBuilder = $queryBuilder;
     }
 
     public function listLogsHtml(
@@ -55,8 +59,12 @@ trait LogActionTrait
 
         $results = $this->logsProcessor->process(
             $this->logsBuilder->start()
-                ->class($entityDto->getFqcn())
-                ->id($entityDto->getPrimaryKeyValueAsString())
+                ->query(
+                    $this->queryBuilder->start()
+                    ->class($entityDto->getFqcn())
+                    ->id($entityDto->getPrimaryKeyValueAsString())
+                    ->build()
+                )
                 ->perPage($pageSize)
                 ->page($page - 1)
                 ->build()
