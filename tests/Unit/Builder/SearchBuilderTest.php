@@ -1,14 +1,11 @@
 <?php
 
-namespace DualMedia\EsLogBundle\Tests\Unit\Search;
+namespace DualMedia\EsLogBundle\Tests\Unit\Builder;
 
+use DualMedia\EsLogBundle\Builder\SearchBuilder;
 use DualMedia\EsLogBundle\Model\Configuration;
-use DualMedia\EsLogBundle\Query\Builder as QueryBuilder;
-use DualMedia\EsLogBundle\Search\Builder;
-use DualMedia\EsLogBundle\Tests\Resource\TestClass;
 use Elastica\Client;
 use Elastica\Index;
-use Elastica\Query\AbstractQuery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -17,10 +14,10 @@ use PHPUnit\Framework\TestCase;
 
 #[Group('unit')]
 #[Group('search')]
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase
+#[CoversClass(SearchBuilder::class)]
+class SearchBuilderTest extends TestCase
 {
-    private Builder $builder;
+    private SearchBuilder $builder;
     private Client&MockObject $client;
     private Configuration $configuration;
 
@@ -29,7 +26,7 @@ class BuilderTest extends TestCase
         parent::setUp();
         $this->client = $this->createMock(Client::class);
         $this->configuration = new Configuration('index');
-        $this->builder = new Builder($this->client, $this->configuration);
+        $this->builder = new SearchBuilder($this->client, $this->configuration);
     }
 
     #[TestWith([])]
@@ -46,23 +43,8 @@ class BuilderTest extends TestCase
             ->willReturn($indexEntity);
         $configuration = new Configuration($index);
 
-        $builder = new Builder($client, $configuration);
+        $builder = new SearchBuilder($client, $configuration);
         $builder->start();
-    }
-
-    /**
-     * @param class-string $className
-     */
-    #[TestWith([])]
-    public function testQuery(
-        string $className = TestClass::class
-    ): void {
-        $this->builder->start();
-        $this->builder->query((new QueryBuilder())->start()->class($className)->build());
-        $search = $this->builder->build();
-        /** @var AbstractQuery $query */
-        $query = $search->getQuery()->getQuery();
-        static::assertSame($className, $query->getParam('filter')[0]->getParam('objectClass'));
     }
 
     #[TestWith([])]

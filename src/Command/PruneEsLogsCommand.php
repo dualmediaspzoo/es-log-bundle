@@ -2,8 +2,8 @@
 
 namespace DualMedia\EsLogBundle\Command;
 
+use DualMedia\EsLogBundle\Builder\QueryBuilder;
 use DualMedia\EsLogBundle\Model\Configuration;
-use DualMedia\EsLogBundle\Query\Builder;
 use Elastica\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +21,7 @@ class PruneEsLogsCommand extends Command
     public function __construct(
         private readonly Client $client,
         private readonly Configuration $configuration,
-        private readonly Builder $builder
+        private readonly QueryBuilder $builder
     ) {
         parent::__construct();
     }

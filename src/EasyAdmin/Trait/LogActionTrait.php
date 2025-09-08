@@ -2,9 +2,9 @@
 
 namespace DualMedia\EsLogBundle\EasyAdmin\Trait;
 
+use DualMedia\EsLogBundle\Builder\QueryBuilder;
+use DualMedia\EsLogBundle\Builder\SearchBuilder;
 use DualMedia\EsLogBundle\EasyAdmin\ElasticPaginator;
-use DualMedia\EsLogBundle\Query\Builder as QueryBuilder;
-use DualMedia\EsLogBundle\Search\Builder;
 use DualMedia\EsLogBundle\Search\Processor;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -19,14 +19,14 @@ use Twig\Environment;
 /** @phpstan-ignore trait.unused */
 trait LogActionTrait
 {
-    protected Builder $logsBuilder;
+    protected SearchBuilder $logsBuilder;
     protected QueryBuilder $queryBuilder;
     protected Processor $logsProcessor;
     protected AdminUrlGeneratorInterface $logsAdminUrlGenerator;
 
     #[Required]
     public function setListLogsServices(
-        Builder $builder,
+        SearchBuilder $builder,
         Processor $processor,
         AdminUrlGenerator $generator,
         QueryBuilder $queryBuilder
@@ -59,15 +59,14 @@ trait LogActionTrait
 
         $results = $this->logsProcessor->process(
             $this->logsBuilder->start()
-                ->query(
+                ->perPage($pageSize)
+                ->page($page - 1)
+                ->build(
                     $this->queryBuilder->start()
                     ->class($entityDto->getFqcn())
                     ->id($entityDto->getPrimaryKeyValueAsString())
                     ->build()
                 )
-                ->perPage($pageSize)
-                ->page($page - 1)
-                ->build()
         );
 
         $paginator = new ElasticPaginator(

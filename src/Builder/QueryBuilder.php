@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DualMedia\EsLogBundle\Query;
+namespace DualMedia\EsLogBundle\Builder;
 
 use DualMedia\EsLogBundle\EsLogBundle;
 use Elastica\Query\AbstractQuery;
@@ -10,7 +10,7 @@ use Elastica\Query\BoolQuery;
 use Elastica\Query\Range;
 use Elastica\Query\Term;
 
-class Builder
+class QueryBuilder
 {
     private BoolQuery|null $query = null;
 

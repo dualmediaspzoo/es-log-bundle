@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DualMedia\EsLogBundle\Tests\Unit\Query;
+namespace DualMedia\EsLogBundle\Tests\Unit\Builder;
 
-use DualMedia\EsLogBundle\Query\Builder;
+use DualMedia\EsLogBundle\Builder\QueryBuilder;
 use DualMedia\EsLogBundle\Tests\Resource\TestClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -13,21 +13,21 @@ use PHPUnit\Framework\TestCase;
 
 #[Group('unit')]
 #[Group('query')]
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase
+#[CoversClass(QueryBuilder::class)]
+class QueryBuilderTest extends TestCase
 {
-    private Builder $builder;
+    private QueryBuilder $builder;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->builder = new Builder();
+        $this->builder = new QueryBuilder();
     }
 
     public function testStart(): void
     {
-        static::assertInstanceOf(Builder::class, $this->builder->start());
+        static::assertInstanceOf(QueryBuilder::class, $this->builder->start());
     }
 
     /**

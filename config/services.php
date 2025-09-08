@@ -13,7 +13,7 @@ return static function (ContainerConfigurator $configurator) {
         ->defaults()
         ->private();
 
-    $services->set(\DualMedia\EsLogBundle\Query\Builder::class);
+    $services->set(\DualMedia\EsLogBundle\Builder\QueryBuilder::class);
 
     $services->set('.dualmedia.log.configuration', \DualMedia\EsLogBundle\Model\Configuration::class)
         ->arg('$index', new AbstractArgument('Set through configuration'));
@@ -26,7 +26,7 @@ return static function (ContainerConfigurator $configurator) {
     $services->set(\DualMedia\EsLogBundle\Command\PruneEsLogsCommand::class)
         ->arg('$configuration', new Reference('.dualmedia.log.configuration'))
         ->arg('$client', new Reference('.dualmedia.log.client'))
-        ->arg('$builder', new Reference(\DualMedia\EsLogBundle\Query\Builder::class))
+        ->arg('$builder', new Reference(\DualMedia\EsLogBundle\Builder\QueryBuilder::class))
         ->tag('console.command');
 
     $services->set(\DualMedia\EsLogBundle\Command\DeleteEsIndexCommand::class)
@@ -106,7 +106,7 @@ return static function (ContainerConfigurator $configurator) {
     $services->set(\DualMedia\EsLogBundle\Normalizer\NullNormalizer::class)
         ->tag(Bundle::NORMALIZER_TAG);
 
-    $services->set(\DualMedia\EsLogBundle\Search\Builder::class)
+    $services->set(\DualMedia\EsLogBundle\Builder\SearchBuilder::class)
         ->arg('$configuration', new Reference('.dualmedia.log.configuration'))
         ->arg('$client', new Reference('.dualmedia.log.client'));
 
