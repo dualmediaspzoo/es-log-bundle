@@ -7,7 +7,7 @@ use DualMedia\EsLogBundle\Model\Configuration;
 use Elastica\Client;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
-use Elastica\Query\Term;
+use Elastica\Query\MatchQuery;
 use Elastica\Search;
 
 class Builder
@@ -51,9 +51,7 @@ class Builder
     ): self {
         assert(null !== $this->search);
 
-        $this->filters->addFilter(new Term([
-            'objectClass' => EsLogBundle::getRealClass($className),
-        ]));
+        $this->filters->addFilter(new MatchQuery('objectClass', EsLogBundle::getRealClass($className)));
 
         return $this;
     }
@@ -63,9 +61,7 @@ class Builder
     ): self {
         assert(null !== $this->search);
 
-        $this->filters->addFilter(new Term([
-            'objectId' => $id,
-        ]));
+        $this->filters->addFilter(new MatchQuery('objectId', $id));
 
         return $this;
     }
