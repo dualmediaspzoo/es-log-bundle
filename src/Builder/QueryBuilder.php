@@ -7,8 +7,8 @@ namespace DualMedia\EsLogBundle\Builder;
 use DualMedia\EsLogBundle\EsLogBundle;
 use Elastica\Query\AbstractQuery;
 use Elastica\Query\BoolQuery;
+use Elastica\Query\MatchQuery;
 use Elastica\Query\Range;
-use Elastica\Query\Term;
 
 class QueryBuilder
 {
@@ -49,13 +49,13 @@ class QueryBuilder
     public function class(
         string $className
     ): self {
-        return $this->filter(new Term(['objectClass' => EsLogBundle::getRealClass($className)]));
+        return $this->filter(new MatchQuery('objectClass', EsLogBundle::getRealClass($className)));
     }
 
     public function id(
         string|int $id
     ): self {
-        return $this->filter(new Term(['objectId' => $id]));
+        return $this->filter(new MatchQuery('objectId', $id));
     }
 
     public function olderThan(
