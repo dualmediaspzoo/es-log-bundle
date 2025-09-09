@@ -5,6 +5,7 @@ namespace DualMedia\EsLogBundle\Command;
 use DualMedia\EsLogBundle\Builder\QueryBuilder;
 use DualMedia\EsLogBundle\Model\Configuration;
 use Elastica\Client;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +22,8 @@ class PruneEsLogsCommand extends Command
     public function __construct(
         private readonly Client $client,
         private readonly Configuration $configuration,
-        private readonly QueryBuilder $builder
+        private readonly QueryBuilder $builder,
+        private readonly LoggerInterface|null $logger = null
     ) {
         parent::__construct();
     }
@@ -59,12 +61,14 @@ class PruneEsLogsCommand extends Command
                     'max_docs' => $limit,
                 ]);
         } catch (\Exception $e) {
+            $this->logger?->error('[EsLogBundle] Failed to prune logs because of an exception', ['message' => $e->getMessage()]);
             $io->error('An unexpected exception occurred: '.$e->getMessage());
 
             return Command::FAILURE;
         }
 
         if (!$response->isOk()) {
+            $this->logger?->error('[EsLogBundle] Failed to prune logs', ['response' => $response->getData()]);
             $io->error('The delete_by_query operation failed: '.$response->getError());
 
             return Command::FAILURE;

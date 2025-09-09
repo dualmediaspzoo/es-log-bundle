@@ -63,9 +63,9 @@ trait LogActionTrait
                 ->page($page - 1)
                 ->build(
                     $this->queryBuilder->start()
-                    ->class($entityDto->getFqcn())
-                    ->id($entityDto->getPrimaryKeyValueAsString())
-                    ->build()
+                        ->class($entityDto->getFqcn())
+                        ->id($entityDto->getPrimaryKeyValueAsString())
+                        ->build()
                 )
         );
 
