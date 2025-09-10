@@ -1,19 +1,16 @@
 <?php
 
-namespace DualMedia\EsLogBundle\Search;
+namespace DualMedia\EsLogBundle\Builder;
 
-use DualMedia\EsLogBundle\EsLogBundle;
 use DualMedia\EsLogBundle\Model\Configuration;
 use Elastica\Client;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
-use Elastica\Query\MatchQuery;
 use Elastica\Search;
 
-class Builder
+class SearchBuilder
 {
     private Search|null $search = null;
-    private BoolQuery|null $filters = null;
     private string $sort = 'loggedAt';
     private bool $sortDesc = true;
     private int $page = 0;
@@ -31,7 +28,6 @@ class Builder
 
         $index = $this->client->getIndex($this->configuration->index);
         $this->search = new Search($this->client);
-        $this->filters = new BoolQuery();
 
         $this->sort = 'loggedAt';
         $this->sortDesc = true;
@@ -39,29 +35,6 @@ class Builder
         $this->perPage = 10;
 
         $this->search->addIndex($index);
-
-        return $this;
-    }
-
-    /**
-     * @param class-string $className
-     */
-    public function class(
-        string $className
-    ): self {
-        assert(null !== $this->search);
-
-        $this->filters->addFilter(new MatchQuery('objectClass', EsLogBundle::getRealClass($className)));
-
-        return $this;
-    }
-
-    public function id(
-        string|int $id
-    ): self {
-        assert(null !== $this->search);
-
-        $this->filters->addFilter(new MatchQuery('objectId', $id));
 
         return $this;
     }
@@ -97,13 +70,14 @@ class Builder
         return $this;
     }
 
-    public function build(): Search
-    {
+    public function build(
+        BoolQuery|null $query = null
+    ): Search {
         assert(null !== $this->search);
 
         $search = $this->search;
 
-        $query = Query::create($this->filters);
+        $query = Query::create($query);
         $query->setSort([$this->sort => ['order' => $this->sortDesc ? 'desc' : 'asc']]);
 
         $query->setSize($this->perPage);
@@ -113,7 +87,6 @@ class Builder
         $search->setQuery($query);
 
         $this->search = null;
-        $this->filters = null;
 
         return $search;
     }
