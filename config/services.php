@@ -27,6 +27,7 @@ return static function (ContainerConfigurator $configurator) {
         ->arg('$configuration', new Reference('.dualmedia.log.configuration'))
         ->arg('$client', new Reference('.dualmedia.log.client'))
         ->arg('$builder', new Reference(\DualMedia\EsLogBundle\Builder\QueryBuilder::class))
+        ->arg('$logger', new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE))
         ->tag('console.command');
 
     $services->set(\DualMedia\EsLogBundle\Command\DeleteEsIndexCommand::class)
