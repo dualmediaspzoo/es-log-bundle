@@ -32,7 +32,7 @@ readonly class Entry
      * @return Entry<TChange>
      */
     public function withId(
-        string $id
+        string|null $id
     ): self {
         return new self(
             $this->action,
@@ -109,7 +109,7 @@ readonly class Entry
         return $this->loggedAt;
     }
 
-    public function getObjectId(): string
+    public function getObjectId(): string|null
     {
         return $this->objectId;
     }

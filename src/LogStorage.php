@@ -57,6 +57,14 @@ class LogStorage
             $entity = $this->entityReferences[$i];
             $value = $entity->getId(); // @phpstan-ignore-line
 
+            // means entity creation has failed, likely due to a transaction restart
+            // since doctrine doesn't provide any information about states of transactions or UOW restarts
+            // it's impossible to determine it otherwise
+            if ($entry->getType()->isAutomatic() && null === $value) {
+                unset($this->entries[$i]);
+                continue;
+            }
+
             $entry = $entry->withId(match ($value) {
                 null => null,
                 default => (string)$value,
