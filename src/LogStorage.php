@@ -62,6 +62,7 @@ class LogStorage
             // it's impossible to determine it otherwise
             if ($entry->getType()->isAutomatic() && null === $value) {
                 unset($this->entries[$i]);
+                $this->entityReferences[$i] = null; // remove reference
                 continue;
             }
 
