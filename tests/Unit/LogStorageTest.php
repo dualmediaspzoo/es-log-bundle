@@ -3,6 +3,7 @@
 namespace DualMedia\EsLogBundle\Tests\Unit;
 
 use DualMedia\EsLogBundle\Enum\ActionEnum;
+use DualMedia\EsLogBundle\Enum\TypeEnum;
 use DualMedia\EsLogBundle\LogStorage;
 use DualMedia\EsLogBundle\Model\Entry;
 use DualMedia\EsLogBundle\Tests\Resource\TestClass;
@@ -65,6 +66,8 @@ class LogStorageTest extends TestCase
                 ->willReturn($data['enum']);
             $entry->method('withId')
                 ->willReturn($entryWithId);
+            $entry->method('getType')
+                ->willReturn(TypeEnum::Automatic);
             $object = $this->createMock(TestClass::class);
             $object->method('getId')
                 ->willReturn($data['id']);
