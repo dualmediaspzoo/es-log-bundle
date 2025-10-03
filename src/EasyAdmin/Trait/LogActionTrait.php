@@ -40,7 +40,7 @@ trait LogActionTrait
     public function listLogsHtml(
         AdminContext $context
     ): Response {
-        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::INDEX, 'entity' => null])) {
+        if (!$this->checkListLogsHtmlAction($context)) {
             throw new ForbiddenActionException($context);
         }
 
@@ -89,5 +89,11 @@ trait LogActionTrait
                     $templateParameters
                 )
         );
+    }
+
+    protected function checkListLogsHtmlAction(
+        AdminContext $context
+    ): bool {
+        return $this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::INDEX, 'entity' => null]);
     }
 }
