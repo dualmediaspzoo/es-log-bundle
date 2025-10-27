@@ -6,6 +6,8 @@
 
     {% if value.value.type == '\DateTimeImmutable' %}
         {% include '@EsLog/field/datetime.html.twig' with {value: loaded} only %}
+    {% elseif value.value.type == 'array' is defined %}
+        {% include '@EsLog/field/array.html.twig' with {value: loaded} only %}
     {% elseif value.value.metadata.isBackedEnum is defined %}
         {% include '@EsLog/field/enum.html.twig' with {value: loaded} only %}
     {% elseif value.value.type == 'null' %}
