@@ -9,7 +9,7 @@ use DualMedia\EsLogBundle\Model\LoadedValue;
 use DualMedia\EsLogBundle\Model\Value;
 
 /**
- * @implements DenormalizerInterface<array<mixed,\BackedEnum>>
+ * @implements DenormalizerInterface<array<\BackedEnum>>
  */
 class ArrayNormalizer implements NormalizerInterface, DenormalizerInterface
 {
@@ -36,9 +36,8 @@ class ArrayNormalizer implements NormalizerInterface, DenormalizerInterface
             $enumClass ??= get_class($item);
         }
 
-
-        if($isArrayOfBackedEnums){
-            $value = array_map(fn ($item): \BackedEnum => $item->value, $value);
+        if ($isArrayOfBackedEnums) {
+            $value = array_map(fn (\BackedEnum $item): mixed => $item->value, $value);
         }
 
         return new Value(
@@ -63,9 +62,11 @@ class ArrayNormalizer implements NormalizerInterface, DenormalizerInterface
         return new LoadedValue(
             $value,
             static function () use ($value) {
-                // @phpstan-ignore-line
                 return array_map(function ($v) use ($value) {
-                    return call_user_func([$value->metadata[self::ITEM_TYPE], 'from'], $v);
+                    /** @var \BackedEnum $backedEnum */
+                    $backedEnum = call_user_func([$value->metadata[self::ITEM_TYPE], 'from'], $v); // @phpstan-ignore-line
+
+                    return $backedEnum;
                 }, $value->value);
             }
         );

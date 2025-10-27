@@ -1,6 +1,6 @@
 {# @var value array #}
 {% for item in value %}
-    {% if value.value.metadata.isBackedEnum is defined %}
+    {% if isArrayOfBackedEnums %}
         {% include '@EsLog/field/enum.html.twig' with {value: item} only %}
     {% else %}
         {{ item }}
