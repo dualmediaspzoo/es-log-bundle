@@ -1,7 +1,8 @@
 {# @var value \DualMedia\EsLogBundle\Model\LoadedValue #}
 
+{% set value = value.value.value %}
 <h6>
-    Value: {{ value.value.value }}
+    Value: {% if value is iterable %} {{ value|join(', ') }} {% else %} {{ value }}
 </h6>
 <div>
     Type: {{ value.value.type }}

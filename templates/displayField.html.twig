@@ -4,7 +4,9 @@
 {% else %}
     {% set loaded = value.loaded %}
 
-    {% if value.value.type == '\DateTimeImmutable' %}
+    {% if value.value.type == 'array' and value.value.metadata.isArrayOfBackedEnums is defined %}
+        {% include '@EsLog/field/array.html.twig' with {value: loaded,isArrayOfBackedEnums: value.value.metadata.isArrayOfBackedEnums} only %}
+    {% elseif value.value.type == '\DateTimeImmutable' %}
         {% include '@EsLog/field/datetime.html.twig' with {value: loaded} only %}
     {% elseif value.value.metadata.isBackedEnum is defined %}
         {% include '@EsLog/field/enum.html.twig' with {value: loaded} only %}

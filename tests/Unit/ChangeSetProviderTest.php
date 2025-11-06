@@ -151,5 +151,35 @@ class ChangeSetProviderTest extends TestCase
                 'field2' => [1.1, 1],
             ],
         ];
+
+        yield [
+            [
+                'field1' => [
+                    [TestEnum::B, TestEnum::A],
+                    [TestEnum::A, TestEnum::B],
+                ],
+                'field2' => [
+                    TestEnum::A,
+                    TestEnum::B,
+                ],
+            ],
+            [
+                'trackCreate' => true,
+                'trackUpdate' => true,
+                'trackDelete' => false,
+                'properties' => [
+                    'field1' => [
+                        'enumClass' => TestEnum::class,
+                    ],
+                    'field2' => [
+                        'enumClass' => TestEnum::class,
+                    ],
+                ],
+            ],
+            [
+                'field1' => [['a', 'b'], ['b', 'a']],
+                'field2' => ['b', 'a'],
+            ],
+        ];
     }
 }

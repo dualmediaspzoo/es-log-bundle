@@ -95,6 +95,10 @@ return static function (ContainerConfigurator $configurator) {
         ->tag(Bundle::NORMALIZER_TAG)
         ->tag(Bundle::DENORMALIZER_TAG);
 
+    $services->set(\DualMedia\EsLogBundle\Normalizer\ArrayNormalizer::class)
+        ->tag(Bundle::NORMALIZER_TAG)
+        ->tag(Bundle::DENORMALIZER_TAG);
+
     $services->set(\DualMedia\EsLogBundle\Normalizer\IntNormalizer::class)
         ->tag(Bundle::NORMALIZER_TAG);
 

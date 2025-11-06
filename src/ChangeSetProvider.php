@@ -35,11 +35,19 @@ class ChangeSetProvider
 
             if (null !== ($enumClass = $metadata['enumClass'] ?? null)) {
                 if (null !== $from && !($from instanceof \BackedEnum)) {
-                    $from = $enumClass::from($from);
+                    if (is_array($from)) {
+                        $from = array_map(fn ($value): \BackedEnum => $enumClass::from($value), $from);
+                    } else {
+                        $from = $enumClass::from($from);
+                    }
                 }
 
                 if (null !== $to && !($to instanceof \BackedEnum)) {
-                    $to = $enumClass::from($to);
+                    if (is_array($to)) {
+                        $to = array_map(fn ($value): \BackedEnum => $enumClass::from($value), $to);
+                    } else {
+                        $to = $enumClass::from($to);
+                    }
                 }
             }
 
