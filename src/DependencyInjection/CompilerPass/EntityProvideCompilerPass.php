@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\Column;
 use DualMedia\EsLogBundle\Attribute\AsIgnoredProperty;
 use DualMedia\EsLogBundle\Attribute\AsLoggedEntity;
 use DualMedia\EsLogBundle\Attribute\AsTrackedProperty;
+use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\Metadata\ConfigProvider;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -57,6 +58,10 @@ class EntityProvideCompilerPass implements CompilerPassInterface
         $metadata = [];
 
         foreach ($classes as $class) {
+            if (!is_subclass_of($class, IdentifiableInterface::class)) {
+                throw new \RuntimeException('Entity '.$class.' must implement '.IdentifiableInterface::class);
+            }
+
             try {
                 $reflection = new \ReflectionClass($class); // @phpstan-ignore-line
             } catch (\Throwable) {

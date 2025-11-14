@@ -1,0 +1,16 @@
+<div style="margin-top: .35rem;">
+    {% if metadata.message is defined and metadata.message %}
+        <div class="badge badge-secondary" style="white-space: normal; text-align: left;">
+            {{ metadata.message }}
+        </div>
+    {% endif %}
+    {% set rest = metadata|filter((v,k) => k != 'message') %}
+    {% if rest is not empty %}
+        <details style="margin-top: .25rem;">
+            <summary style="cursor: pointer;">Metadata: </summary>
+            <pre style="margin: .25rem 0; white-space: pre-wrap; word-break: break-word;">
+                {{ rest is iterable ? rest|json_encode(constant('JSON_PRETTY_PRINT')) : rest }}
+            </pre>
+        </details>
+    {% endif %}
+</div>

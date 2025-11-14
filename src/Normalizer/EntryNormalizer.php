@@ -117,15 +117,15 @@ class EntryNormalizer
 
         $entry = new Entry(
             $action,
-            $type,
-            $objectId,
             $objectClass,
+            $objectId,
             [],
             $userIdentifier,
             $userIdentifierClass,
             $metadata,
             $loggedAt,
-            $documentId
+            $documentId,
+            $type
         );
 
         foreach ($input['changes'] as $index => $data) {

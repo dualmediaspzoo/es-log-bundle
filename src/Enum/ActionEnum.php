@@ -10,6 +10,8 @@ enum ActionEnum: string
 
     case Remove = 'remove';
 
+    case Info = 'info';
+
     public function isCreate(): bool
     {
         return self::Create === $this;
