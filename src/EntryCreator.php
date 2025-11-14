@@ -16,6 +16,9 @@ class EntryCreator
     ) {
     }
 
+    /**
+     * @param Entry<mixed> $entry
+     */
     public function create(
         Entry $entry,
         IdentifiableInterface $object,

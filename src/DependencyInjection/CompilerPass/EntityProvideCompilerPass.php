@@ -62,11 +62,7 @@ class EntityProvideCompilerPass implements CompilerPassInterface
                 throw new \RuntimeException('Entity '.$class.' must implement '.IdentifiableInterface::class);
             }
 
-            try {
-                $reflection = new \ReflectionClass($class); // @phpstan-ignore-line
-            } catch (\Throwable) {
-                continue;
-            }
+            $reflection = new \ReflectionClass($class); // @phpstan-ignore-line
 
             /** @var AsLoggedEntity|null $attribute */
             $attribute = ($reflection->getAttributes(AsLoggedEntity::class)[0] ?? null)?->newInstance();
