@@ -2,6 +2,7 @@
 
 namespace DualMedia\EsLogBundle\Model;
 
+use Doctrine\Common\Util\ClassUtils;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\Enum\TypeEnum;
 use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
@@ -18,7 +19,7 @@ readonly class Entry
      */
     public function __construct(
         private ActionEnum $action,
-        private string|null $objectClass,
+        private string|null $objectClass = null,
         private string|null $objectId = null,
         private array $changes = [],
         private string|null $userIdentifier = null,
@@ -45,7 +46,7 @@ readonly class Entry
 
         return new self(
             $this->action,
-            $this->objectClass,
+            null !== $this->objectClass ? $this->objectClass : ClassUtils::getRealClass(get_class($object)),
             $objectId,
             $this->changes,
             $user?->getUserIdentifier(),
