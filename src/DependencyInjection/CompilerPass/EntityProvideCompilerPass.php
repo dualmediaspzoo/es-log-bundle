@@ -123,11 +123,17 @@ class EntityProvideCompilerPass implements CompilerPassInterface
                             }
                         };
 
-                        match ($associationClass) {
-                            ManyToOne::class ,OneToOne::class => $validate($type->getName(), $class, $property->getName()),
-                            OneToMany::class ,ManyToMany::class => $validate($mapping->targetEntity, $class, $property->getName()),
-                            default => throw new \InvalidArgumentException(),
-                        };
+                        if ((ManyToOne::class === $associationClass || OneToOne::class === $associationClass) && ($type instanceof \ReflectionNamedType && !$type->isBuiltin())) {
+                            $validate($type->getName(), $class, $property->getName());
+                            break;
+                        }
+
+                        if ((ManyToMany::class === $associationClass || OneToMany::class === $associationClass) && (null !== $targetEntity = $mapping->targetEntity)) {
+                            $validate($targetEntity, $class, $property->getName());
+                            break;
+                        }
+
+                        throw new \RuntimeException(sprintf('Unsupported association type "%s" in %s::$%s', $associationClass, $class, $property->getName()));
                     }
                 }
 
