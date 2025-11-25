@@ -19,7 +19,3 @@
         {% include '@EsLog/field/generic.html.twig' with {value: loaded} only %}
     {% endif %}
 {% endif %}
-
-{% if metadata is not empty %}
-   {% include '@EsLog/field/metadata.html.twig' with { metadata: metadata } only %}
-{% endif %}

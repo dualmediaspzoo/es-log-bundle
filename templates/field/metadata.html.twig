@@ -1,16 +1,29 @@
-<div style="margin-top: .35rem;">
-    {% if metadata.message is defined and metadata.message %}
-        <div class="badge badge-secondary" style="white-space: normal; text-align: left;">
-            {{ metadata.message }}
+{% set rest = metadata|filter((v,k) => k != 'message') %}
+{% if metadata.message is defined and metadata.message %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title border-bottom pb-2">Message: </h6>
+                    <div class="badge badge-secondary">
+                        {{ metadata.message }}
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
-    {% set rest = metadata|filter((v,k) => k != 'message') %}
-    {% if rest is not empty %}
-        <details style="margin-top: .25rem;">
-            <summary style="cursor: pointer;">Metadata: </summary>
-            <pre style="margin: .25rem 0; white-space: pre-wrap; word-break: break-word;">
-                {{ rest is iterable ? rest|json_encode(constant('JSON_PRETTY_PRINT')) : rest }}
-            </pre>
-        </details>
-    {% endif %}
-</div>
+    </div>
+{% endif %}
+{% if rest is not empty %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title border-bottom pb-2">Metadata: </h6>
+                    <pre class="text-white">
+                        {{- rest is iterable ? rest|json_encode(constant('JSON_PRETTY_PRINT')) : rest -}}
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
