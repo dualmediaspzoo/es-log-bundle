@@ -2,7 +2,7 @@
 
 {% set value = value.value.value %}
 <h6>
-    Value: {% if value is iterable %} {{ value|join(', ') }} {% else %} {{ value }}
+    Value: {% if value is iterable %} {{ value|join(', ') }} {% else %} {{ value }} {% endif %}
 </h6>
 <div>
     Type: {{ value.value.type }}
