@@ -42,8 +42,11 @@ return static function (ContainerConfigurator $configurator) {
 
     $services->set(\DualMedia\EsLogBundle\LogCreator::class)
         ->arg('$configProvider', new Reference(\DualMedia\EsLogBundle\Metadata\ConfigProvider::class))
-        ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
         ->arg('$changeSetProvider', new Reference(\DualMedia\EsLogBundle\ChangeSetProvider::class))
+        ->arg('$entryCreator', new Reference(\DualMedia\EsLogBundle\EntryCreator::class));
+
+    $services->set(\DualMedia\EsLogBundle\EntryCreator::class)
+        ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
         ->arg('$eventDispatcher', new Reference('event_dispatcher'));
 
     $services->set(\DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber::class)
