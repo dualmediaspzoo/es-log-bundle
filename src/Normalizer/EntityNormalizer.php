@@ -2,8 +2,8 @@
 
 namespace DualMedia\EsLogBundle\Normalizer;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Persistence\ManagerRegistry;
-use DualMedia\EsLogBundle\EsLogBundle;
 use DualMedia\EsLogBundle\Interface\DenormalizerInterface;
 use DualMedia\EsLogBundle\Interface\NormalizerInterface;
 use DualMedia\EsLogBundle\Model\Entry;
@@ -36,7 +36,7 @@ class EntityNormalizer implements NormalizerInterface, DenormalizerInterface
             return null;
         }
 
-        $class = EsLogBundle::getRealClass(get_class($value));
+        $class = ClassUtils::getRealClass(get_class($value));
         $isEntity = $this->entityCache[$class] ??= null !== $this->registry->getManagerForClass($class);
 
         if (!$isEntity) {
