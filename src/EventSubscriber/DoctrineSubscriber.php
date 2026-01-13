@@ -5,7 +5,6 @@ namespace DualMedia\EsLogBundle\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
-use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\LogCreator;
 use DualMedia\EsLogBundle\LogStorage;
 use DualMedia\EsLogBundle\UserContext;
@@ -27,17 +26,14 @@ class DoctrineSubscriber
         $user = $this->context->getUser();
 
         foreach ($uow->getScheduledEntityInsertions() as $object) {
-            /** @var IdentifiableInterface $object */
             $this->creator->create(ActionEnum::Create, $object, $uow, $user);
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $object) {
-            /** @var IdentifiableInterface $object */
             $this->creator->create(ActionEnum::Update, $object, $uow, $user);
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $object) {
-            /** @var IdentifiableInterface $object */
             $this->creator->create(ActionEnum::Remove, $object, $uow, $user);
         }
     }

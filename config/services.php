@@ -47,7 +47,8 @@ return static function (ContainerConfigurator $configurator) {
 
     $services->set(\DualMedia\EsLogBundle\EntryCreator::class)
         ->arg('$storage', new Reference(\DualMedia\EsLogBundle\LogStorage::class))
-        ->arg('$eventDispatcher', new Reference('event_dispatcher'));
+        ->arg('$eventDispatcher', new Reference('event_dispatcher'))
+        ->arg('$logger', new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE));
 
     $services->set(\DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber::class)
         ->arg('$context', new Reference(\DualMedia\EsLogBundle\UserContext::class))

@@ -5,7 +5,6 @@ namespace DualMedia\EsLogBundle\Model;
 use Doctrine\Common\Util\ClassUtils;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\Enum\TypeEnum;
-use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -35,15 +34,10 @@ readonly class Entry
      * @return Entry<TChange>
      */
     public function withObjectAndUserIdentifier(
-        IdentifiableInterface $object,
+        object $object,
+        string $objectId,
         UserInterface|null $user,
     ): self {
-        $objectId = $object->getId();
-        $objectId = match ($objectId) {
-            null => null,
-            default => (string)$objectId,
-        };
-
         return new self(
             $this->action,
             null !== $this->objectClass ? $this->objectClass : ClassUtils::getRealClass(get_class($object)),

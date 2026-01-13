@@ -8,7 +8,6 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\UnitOfWork;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\Enum\TypeEnum;
-use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\Metadata\ConfigProvider;
 use DualMedia\EsLogBundle\Model\Entry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,7 +23,7 @@ class LogCreator
 
     public function create(
         ActionEnum $action,
-        IdentifiableInterface $object,
+        object $object,
         UnitOfWork $uow,
         UserInterface|null $user
     ): void {

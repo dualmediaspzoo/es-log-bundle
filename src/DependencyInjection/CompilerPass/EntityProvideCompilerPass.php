@@ -3,14 +3,9 @@
 namespace DualMedia\EsLogBundle\DependencyInjection\CompilerPass;
 
 use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
-use Doctrine\ORM\Mapping\OneToOne;
 use DualMedia\EsLogBundle\Attribute\AsIgnoredProperty;
 use DualMedia\EsLogBundle\Attribute\AsLoggedEntity;
 use DualMedia\EsLogBundle\Attribute\AsTrackedProperty;
-use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\Metadata\ConfigProvider;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -99,43 +94,6 @@ class EntityProvideCompilerPass implements CompilerPassInterface
                 }
 
                 $propertyMetadata = [];
-
-                $type = $property->getType();
-
-                if (!($type instanceof \ReflectionNamedType && $type->isBuiltin())) {
-                    foreach ([OneToOne::class, OneToMany::class, ManyToOne::class, ManyToMany::class] as $associationClass) {
-                        /** @var OneToOne|OneToMany|ManyToOne|ManyToMany|null $mapping */
-                        $mapping = ($property->getAttributes($associationClass)[0] ?? null)?->newInstance();
-
-                        if (null === $mapping) {
-                            continue;
-                        }
-
-                        $validate = function (string|null $targetEntity, string $class, string $propertyName): void {
-                            if (!is_subclass_of($targetEntity, IdentifiableInterface::class)) {
-                                throw new \RuntimeException(sprintf(
-                                    'Entity "%s" (related in %s::$%s) must implement %s',
-                                    $targetEntity,
-                                    $class,
-                                    $propertyName,
-                                    IdentifiableInterface::class
-                                ));
-                            }
-                        };
-
-                        if ((ManyToOne::class === $associationClass || OneToOne::class === $associationClass) && ($type instanceof \ReflectionNamedType && !$type->isBuiltin())) {
-                            $validate($type->getName(), $class, $property->getName());
-                            break;
-                        }
-
-                        if ((ManyToMany::class === $associationClass || OneToMany::class === $associationClass) && (null !== $targetEntity = $mapping->targetEntity)) {
-                            $validate($targetEntity, $class, $property->getName());
-                            break;
-                        }
-
-                        throw new \RuntimeException(sprintf('Unsupported association type "%s" in %s::$%s', $associationClass, $class, $property->getName()));
-                    }
-                }
 
                 // get enum from column, if set
                 if (null !== ($enumClass = $this->getEnumClass($property))) {
