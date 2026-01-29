@@ -19,7 +19,8 @@
         "ruflin/elastica": "^7.1 || ^8",
         "doctrine/orm": "^2.15 || ^3",
         "psr/log": "^2 || ^3",
-        "doctrine/common": "^3"
+        "doctrine/common": "^3",
+        "dualmedia/common": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3",

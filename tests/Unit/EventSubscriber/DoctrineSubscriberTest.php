@@ -8,7 +8,7 @@ use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber;
-use DualMedia\EsLogBundle\Interface\IdentifiableInterface;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\LogCreator;
 use DualMedia\EsLogBundle\LogStorage;
 use DualMedia\EsLogBundle\UserContext;

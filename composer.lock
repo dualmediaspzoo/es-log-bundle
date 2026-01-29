@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6003484a54258f3e9326faeeba17e3f7",
+    "content-hash": "c9a1510167649fe6fab76ab89e1ff80f",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -849,6 +849,45 @@
                 }
             ],
             "time": "2024-11-01T21:49:07+00:00"
+        },
+        {
+            "name": "dualmedia/common",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dualmediaspzoo/common.git",
+                "reference": "fdb2e99d09c4e75d1dc3b753a3d91ff888dbf21b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dualmediaspzoo/common/zipball/fdb2e99d09c4e75d1dc3b753a3d91ff888dbf21b",
+                "reference": "fdb2e99d09c4e75d1dc3b753a3d91ff888dbf21b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DualMedia\\Common\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "pkly"
+                }
+            ],
+            "description": "Shared interfaces and logic",
+            "support": {
+                "issues": "https://github.com/dualmediaspzoo/common/issues",
+                "source": "https://github.com/dualmediaspzoo/common/tree/1.0.0"
+            },
+            "time": "2026-01-27T11:52:48+00:00"
         },
         {
             "name": "elastic/transport",
