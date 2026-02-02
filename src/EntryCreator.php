@@ -2,8 +2,8 @@
 
 namespace DualMedia\EsLogBundle;
 
-use DualMedia\EsLogBundle\Event\LogCreatedEvent;
 use DualMedia\Common\Interface\IdentifiableInterface;
+use DualMedia\EsLogBundle\Event\LogCreatedEvent;
 use DualMedia\EsLogBundle\Model\Entry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
