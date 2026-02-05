@@ -29,11 +29,11 @@ class EntryCreatorTest extends TestCase
         $this->service = $this->createRealMockedServiceInstance(EntryCreator::class);
     }
 
-    #[TestWith(['N/A',true, true, true])]
-    #[TestWith([1,true, true, true, 1])]
-    #[TestWith([2,false, true, true, 1,2])]
-    #[TestWith(['N/A',false, false, true, 1,2])]
-    #[TestWith([5,true, true, true, 5])]
+    #[TestWith(['N/A', true, true, true])]
+    #[TestWith([1, true, true, true, 1])]
+    #[TestWith([2, false, true, true, 1, 2])]
+    #[TestWith(['N/A', false, false, true, 1, 2])]
+    #[TestWith([5, true, true, true, 5])]
     public function testCreate(
         int|string $expectedId,
         bool $hasInterface,
@@ -41,18 +41,16 @@ class EntryCreatorTest extends TestCase
         bool $hasUser,
         int|string|null $interfaceId = null,
         int|string|null $objectId = null,
-    ): void
-    {
+    ): void {
         $interface = $this->createMock(IdentifiableInterface::class);
         $interface->method('getId')
             ->willReturn($interfaceId);
 
         $objectWithGetId = new class($objectId) {
-
             public function __construct(
                 private readonly int|string|null $objectId
-            )
-            {}
+            ) {
+            }
 
             public function getId(): int|string|null
             {
@@ -69,14 +67,14 @@ class EntryCreatorTest extends TestCase
         $entry->expects(static::once())
             ->method('withObjectAndUserIdentifier')
             ->with(
-                self::isObject(),
+                static::isObject(),
                 $expectedId,
                 $user
             )
             ->willReturnSelf();
 
         $this->getMockedService(LoggerInterface::class)
-            ->expects(static::exactly((int) (!$hasInterface && !$hasIdMethod)))
+            ->expects(static::exactly((int)(!$hasInterface && !$hasIdMethod)))
             ->method('warning')
             ->with(static::stringContains('Object "stdClass" does not implement IdentifiableInterface and lacks getId() method'));
 
@@ -90,13 +88,13 @@ class EntryCreatorTest extends TestCase
         $this->getMockedService(EventDispatcherInterface::class)
             ->expects(static::once())
             ->method('dispatch')
-            ->with(self::isInstanceOf(LogCreatedEvent::class))
+            ->with(static::isInstanceOf(LogCreatedEvent::class))
             ->willReturn($logCreatedEvent);
 
         $this->getMockedService(LogStorage::class)
             ->expects(static::once())
             ->method('append')
-            ->with($entryFromEvent, self::isObject());
+            ->with($entryFromEvent, static::isObject());
 
         $this->service->create(
             $entry,
