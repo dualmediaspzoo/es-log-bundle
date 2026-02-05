@@ -1,14 +1,15 @@
 {# @var value \DualMedia\EsLogBundle\Model\LoadedValue #}
+{% set metadata = value.value.metadata %}
 {% if value.complex %}
     {% include '@EsLog/field/complex.html.twig' with {value: value} only %}
 {% else %}
     {% set loaded = value.loaded %}
 
-    {% if value.value.type == 'array' and value.value.metadata.isArrayOfBackedEnums is defined %}
+    {% if value.value.type == 'array' and metadata.isArrayOfBackedEnums is defined %}
         {% include '@EsLog/field/array.html.twig' with {value: loaded,isArrayOfBackedEnums: value.value.metadata.isArrayOfBackedEnums} only %}
     {% elseif value.value.type == '\DateTimeImmutable' %}
         {% include '@EsLog/field/datetime.html.twig' with {value: loaded} only %}
-    {% elseif value.value.metadata.isBackedEnum is defined %}
+    {% elseif metadata.isBackedEnum is defined %}
         {% include '@EsLog/field/enum.html.twig' with {value: loaded} only %}
     {% elseif value.value.type == 'null' %}
         {% include '@EsLog/field/null.html.twig' with {value: null} only %}

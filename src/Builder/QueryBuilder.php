@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DualMedia\EsLogBundle\Builder;
 
-use DualMedia\EsLogBundle\EsLogBundle;
+use Doctrine\Common\Util\ClassUtils;
 use Elastica\Query\AbstractQuery;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\MatchQuery;
@@ -49,7 +49,7 @@ class QueryBuilder
     public function class(
         string $className
     ): self {
-        return $this->filter(new MatchQuery('objectClass', EsLogBundle::getRealClass($className)));
+        return $this->filter(new MatchQuery('objectClass', ClassUtils::getRealClass($className)));
     }
 
     public function id(

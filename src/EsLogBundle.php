@@ -2,7 +2,6 @@
 
 namespace DualMedia\EsLogBundle;
 
-use Doctrine\Persistence\Proxy;
 use DualMedia\EsLogBundle\DependencyInjection\CompilerPass\ClientAssigningCompilerPass;
 use DualMedia\EsLogBundle\DependencyInjection\CompilerPass\EntityProvideCompilerPass;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -60,30 +59,6 @@ class EsLogBundle extends AbstractBundle
 
         $services->get('.dualmedia.log.configuration')
             ->arg('$index', $config['index_name']);
-    }
-
-    /**
-     * Copied over from Doctrine since they remove it later.
-     *
-     * Gets the real class name of a class name that could be a proxy.
-     *
-     * @template T of object
-     *
-     * @param class-string<Proxy<T>>|class-string<T> $className
-     *
-     * @return class-string<T>
-     */
-    public static function getRealClass(
-        string $className
-    ): string {
-        $pos = strrpos($className, '\\'.Proxy::MARKER.'\\');
-
-        if (false === $pos) {
-            /** @psalm-var class-string<T> */
-            return $className;
-        }
-
-        return substr($className, $pos + Proxy::MARKER_LENGTH + 2); // @phpstan-ignore-line
     }
 
     public function build(
