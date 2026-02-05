@@ -40,7 +40,7 @@ readonly class Entry
     ): self {
         return new self(
             $this->action,
-            null !== $this->objectClass ? $this->objectClass : ClassUtils::getRealClass(get_class($object)),
+            ClassUtils::getClass($object),
             $objectId,
             $this->changes,
             $user?->getUserIdentifier(),

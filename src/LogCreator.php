@@ -27,7 +27,7 @@ class LogCreator
         UnitOfWork $uow,
         UserInterface|null $user
     ): void {
-        $className = ClassUtils::getRealClass(get_class($object));
+        $className = ClassUtils::getClass($object);
 
         if (null === ($config = $this->configProvider->provide($className))
             || !$config[$action->getConfigKey()]) {

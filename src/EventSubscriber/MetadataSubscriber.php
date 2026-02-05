@@ -55,7 +55,8 @@ class MetadataSubscriber implements EventSubscriberInterface
         $entry = $event->getEntry();
         $metadata = $entry->getMetadata();
 
-        $metadata['objectIds']['object']['id'] = (string)$event->getObject()->getId(); // @phpstan-ignore-line
+        $objectId = $event->getObject()->getId(); // @phpstan-ignore-line
+        $metadata['objectIds']['object']['id'] = null === $objectId ? 'N/A' : (string)$objectId;
 
         $event->setEntry($entry->withMetadata($metadata));
     }

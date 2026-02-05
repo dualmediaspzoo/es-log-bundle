@@ -36,7 +36,7 @@ class EntityNormalizer implements NormalizerInterface, DenormalizerInterface
             return null;
         }
 
-        $class = ClassUtils::getRealClass(get_class($value));
+        $class = ClassUtils::getClass($value);
         $isEntity = $this->entityCache[$class] ??= null !== $this->registry->getManagerForClass($class);
 
         if (!$isEntity) {
