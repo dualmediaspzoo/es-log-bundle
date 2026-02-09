@@ -2,6 +2,7 @@
 
 namespace DualMedia\EsLogBundle;
 
+use Doctrine\Common\Util\ClassUtils;
 use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\Event\LogCreatedEvent;
 use DualMedia\EsLogBundle\Model\Entry;
@@ -14,7 +15,7 @@ class EntryCreator
     public function __construct(
         private readonly LogStorage $storage,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface|null $logger = null
     ) {
     }
 
@@ -31,7 +32,7 @@ class EntryCreator
         } elseif (method_exists($object, 'getId')) {
             $id = $object->getId() ?? 'N/A';
         } else {
-            $this->logger->warning(sprintf('Object "%s" does not implement IdentifiableInterface and lacks getId() method', get_class($object)));
+            $this->logger->warning('Object does not implement IdentifiableInterface and lacks getId() method', ['object_class' => ClassUtils::getClass($object)]);
             $id = 'N/A';
         }
 

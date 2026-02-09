@@ -44,7 +44,7 @@ readonly class Entry
             $objectId,
             $this->changes,
             $user?->getUserIdentifier(),
-            null !== $user ? get_class($user) : null,
+            null !== $user ? ClassUtils::getClass($user) : null,
             $this->metadata,
             $this->loggedAt,
             $this->documentId,
