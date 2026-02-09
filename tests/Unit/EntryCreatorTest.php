@@ -76,7 +76,10 @@ class EntryCreatorTest extends TestCase
         $this->getMockedService(LoggerInterface::class)
             ->expects(static::exactly((int)(!$hasInterface && !$hasIdMethod)))
             ->method('warning')
-            ->with(static::stringContains('Object "stdClass" does not implement IdentifiableInterface and lacks getId() method'));
+            ->with(
+                static::stringContains('Object does not implement IdentifiableInterface and lacks getId() method'),
+                ['object_class' => \stdClass::class]
+            );
 
         $entryFromEvent = $this->createMock(Entry::class);
 
