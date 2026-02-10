@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DualMedia\EsLogBundle\EventSubscriber;
 
-use DualMedia\EsLogBundle\EsLogBundle;
+use Doctrine\Common\Util\ClassUtils;
 use DualMedia\EsLogBundle\Event\LogCreatedEvent;
 use DualMedia\EsLogBundle\Event\LogProcessedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -39,7 +39,7 @@ class MetadataSubscriber implements EventSubscriberInterface
         $object = $event->getObject();
 
         $metadata['objectIds']['object'] = [
-            'class' => EsLogBundle::getRealClass(get_class($object)),
+            'class' => ClassUtils::getRealClass(get_class($object)),
         ];
 
         if (!$entry->getAction()->isCreate()) {
@@ -55,7 +55,8 @@ class MetadataSubscriber implements EventSubscriberInterface
         $entry = $event->getEntry();
         $metadata = $entry->getMetadata();
 
-        $metadata['objectIds']['object']['id'] = (string)$event->getObject()->getId(); // @phpstan-ignore-line
+        $objectId = $event->getObject()->getId(); // @phpstan-ignore-line
+        $metadata['objectIds']['object']['id'] = null === $objectId ? 'N/A' : (string)$objectId;
 
         $event->setEntry($entry->withMetadata($metadata));
     }

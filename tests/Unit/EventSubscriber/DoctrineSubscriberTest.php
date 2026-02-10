@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
+use DualMedia\Common\Interface\IdentifiableInterface;
 use DualMedia\EsLogBundle\Enum\ActionEnum;
 use DualMedia\EsLogBundle\EventSubscriber\DoctrineSubscriber;
 use DualMedia\EsLogBundle\LogCreator;
@@ -64,15 +65,15 @@ class DoctrineSubscriberTest extends TestCase
         $mockInsert = $mockUpdate = $mockDelete = [];
 
         for ($i = 0; $i < $insertions; $i++) {
-            $mockInsert[] = $this->createMock(\stdClass::class);
+            $mockInsert[] = $this->createMock(IdentifiableInterface::class);
         }
 
         for ($i = 0; $i < $updates; $i++) {
-            $mockUpdate[] = $this->createMock(\stdClass::class);
+            $mockUpdate[] = $this->createMock(IdentifiableInterface::class);
         }
 
         for ($i = 0; $i < $deletions; $i++) {
-            $mockDelete[] = $this->createMock(\stdClass::class);
+            $mockDelete[] = $this->createMock(IdentifiableInterface::class);
         }
 
         $joined = array_merge(
