@@ -92,7 +92,14 @@ class EntryNormalizer
     public function denormalize(
         array $input
     ): Entry {
-        $action = ActionEnum::from($input['action']);
+        // fix bad input
+        $enumActionInput = $input['action'];
+
+        if ('remove' === $enumActionInput) {
+            $enumActionInput = ActionEnum::Delete->value;
+        }
+
+        $action = ActionEnum::from($enumActionInput);
         $type = TypeEnum::from($input['type']);
         $loggedAt = \DateTimeImmutable::createFromFormat(self::DATE_FORMAT_MICROTIME, $input['loggedAt'], $this->getUtc());
         /** @var \DateTimeImmutable $loggedAt */

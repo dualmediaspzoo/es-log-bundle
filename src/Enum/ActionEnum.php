@@ -8,7 +8,7 @@ enum ActionEnum: string
 
     case Update = 'update';
 
-    case Remove = 'remove';
+    case Delete = 'delete';
 
     case Info = 'info';
 
@@ -22,9 +22,9 @@ enum ActionEnum: string
         return self::Update === $this;
     }
 
-    public function isRemove(): bool
+    public function isDelete(): bool
     {
-        return self::Remove === $this;
+        return self::Delete === $this;
     }
 
     public function getConfigKey(): string
