@@ -49,7 +49,7 @@ class LogStorageTest extends TestCase
                 'id' => 13,
             ],
             [
-                'enum' => ActionEnum::Remove,
+                'enum' => ActionEnum::Delete,
                 'id' => 14,
             ],
         ],

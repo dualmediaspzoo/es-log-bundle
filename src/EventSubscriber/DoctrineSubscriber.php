@@ -34,7 +34,7 @@ class DoctrineSubscriber
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $object) {
-            $this->creator->create(ActionEnum::Remove, $object, $uow, $user);
+            $this->creator->create(ActionEnum::Delete, $object, $uow, $user);
         }
     }
 
