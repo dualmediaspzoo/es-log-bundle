@@ -1,6 +1,6 @@
 {# @var value \DualMedia\EsLogBundle\Model\LoadedValue #}
 {% if value.complex %}
-    {% include '@EsLog/field/complex.html.twig' with {value: value} only %}
+    {% include '@EsLog/field/complex.html.twig' with {loadedValue: value} only %}
 {% else %}
     {% set loaded = value.loaded %}
 
