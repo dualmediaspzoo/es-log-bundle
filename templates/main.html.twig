@@ -78,7 +78,7 @@
             <thead>
             {% block table_head %}
                 <tr>
-                    <th class="text-left" dir="{{ ea.i18n.textDirection }}">
+                    <th class="text-left" dir="{{ ea().i18n.textDirection }}">
                         <span>
                             Action
                         </span>
@@ -124,7 +124,7 @@
                     </td>
                     <td>
                         {% if entity.changes|length == 0 and entity.metadata|length == 0 %}
-                            {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
+                            {{ 'datagrid.no_results'|trans(ea().i18n.translationParameters, 'EasyAdminBundle') }}
                         {% else %}
                             <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modal{{ entity.documentId }}">
                                 <i class="fa fa-search"></i>
@@ -147,7 +147,7 @@
                     {% if 2 == loop.index %}
                         <tr class="no-results">
                             <td colspan="100">
-                                {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
+                                {{ 'datagrid.no_results'|trans(ea().i18n.translationParameters, 'EasyAdminBundle') }}
                             </td>
                         </tr>
                     {% endif %}
@@ -160,7 +160,7 @@
     {% if entities|length > 0 %}
         <div class="content-panel-footer without-padding without-border">
             {% block paginator %}
-                {{ include(ea.templatePath('crud/paginator'), {allowedPageSizes: [5, 15, 25]}) }}
+                {{ include(ea().templatePath('crud/paginator'), {allowedPageSizes: [5, 15, 25]}) }}
             {% endblock paginator %}
         </div>
     {% endif %}

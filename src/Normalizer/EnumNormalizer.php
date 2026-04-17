@@ -20,7 +20,7 @@ class EnumNormalizer implements NormalizerInterface, DenormalizerInterface
         string $field,
         mixed $value
     ): Value|null {
-        if (!($value instanceof \BackedEnum)) {
+        if (!$value instanceof \BackedEnum) {
             return null;
         }
 

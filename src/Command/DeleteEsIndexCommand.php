@@ -49,11 +49,10 @@ class DeleteEsIndexCommand extends Command
                 $io->writeln('Index does not exist. Skipping deletion.');
 
                 return self::SUCCESS;
-            } else {
-                $io->error('The index does not exist.');
-
-                return self::FAILURE;
             }
+            $io->error('The index does not exist.');
+
+            return self::FAILURE;
         }
 
         $index->delete();
