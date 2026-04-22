@@ -12,7 +12,7 @@
         "orm"
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.4",
         "symfony/framework-bundle": "^6.4 || ^7.4",
         "symfony/security-bundle": "^6.4 || ^7.4",
         "symfony/event-dispatcher": "^6.4 || ^7.4",
