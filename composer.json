@@ -12,7 +12,7 @@
         "orm"
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.0",
         "symfony/framework-bundle": "^6.4 || ^7.4",
         "symfony/security-bundle": "^6.4 || ^7.4",
         "symfony/event-dispatcher": "^6.4 || ^7.4",
@@ -32,7 +32,7 @@
         "spaze/phpstan-disallowed-calls": "^4",
         "easycorp/easyadmin-bundle": "^5.0",
         "twig/twig": "^3",
-        "phpunit/phpunit": "^12|^13",
+        "phpunit/phpunit": "^12",
         "pkly/phpunit-service-create-trait": "^1.0"
     },
     "autoload": {
