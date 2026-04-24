@@ -2,7 +2,6 @@
 
 namespace DualMedia\EsLogBundle\EasyAdmin\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -17,6 +16,7 @@ class LogEntryConfigurator implements FieldConfiguratorInterface
     ) {
     }
 
+    #[\Override]
     public function supports(
         FieldDto $field,
         EntityDto $entityDto
@@ -24,6 +24,7 @@ class LogEntryConfigurator implements FieldConfiguratorInterface
         return LogEntryField::class === $field->getFieldFqcn();
     }
 
+    #[\Override]
     public function configure(
         FieldDto $field,
         EntityDto $entityDto,
@@ -41,6 +42,9 @@ class LogEntryConfigurator implements FieldConfiguratorInterface
         $field->setCustomOption('controllerUrl', $this->getControllerUrl($request, $context));
     }
 
+    /**
+     * @param AdminContext<object> $context
+     */
     private function getControllerUrl(
         Request $request,
         AdminContext $context
