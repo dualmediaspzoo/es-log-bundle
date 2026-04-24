@@ -21,7 +21,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface
         string $field,
         mixed $value
     ): Value|null {
-        if (!($value instanceof \DateTimeInterface)) {
+        if (!$value instanceof \DateTimeInterface) {
             return null;
         }
 

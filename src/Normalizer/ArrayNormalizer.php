@@ -29,7 +29,7 @@ class ArrayNormalizer implements NormalizerInterface, DenormalizerInterface
         $isArrayOfBackedEnums = true;
 
         foreach ($value as $item) {
-            if (!($item instanceof \BackedEnum)) {
+            if (!$item instanceof \BackedEnum) {
                 $isArrayOfBackedEnums = false;
                 break;
             }

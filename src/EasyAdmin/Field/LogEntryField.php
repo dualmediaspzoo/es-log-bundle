@@ -5,6 +5,7 @@ namespace DualMedia\EsLogBundle\EasyAdmin\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 class LogEntryField implements FieldInterface
 {
@@ -15,7 +16,7 @@ class LogEntryField implements FieldInterface
 
     public static function new(
         string $propertyName,
-        string|null $label = null
+        TranslatableInterface|string|bool|null $label = null
     ): self {
         return (new self())
             ->setProperty($propertyName)

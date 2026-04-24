@@ -6,6 +6,7 @@ use DualMedia\EsLogBundle\Builder\QueryBuilder;
 use DualMedia\EsLogBundle\Builder\SearchBuilder;
 use DualMedia\EsLogBundle\EasyAdmin\ElasticPaginator;
 use DualMedia\EsLogBundle\Search\Processor;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
@@ -37,6 +38,7 @@ trait LogActionTrait
         $this->queryBuilder = $queryBuilder;
     }
 
+    #[AdminRoute(path: '/list-logs-html', name: 'listLogsHtml')]
     public function listLogsHtml(
         AdminContext $context
     ): Response {
@@ -75,7 +77,7 @@ trait LogActionTrait
         );
 
         $templateParameters = [
-            // new context should be passed to twig here cause easy admin passes only globally context from container as ea variable
+            // new context should be passed to twig here cause easy admin no longer injects it globally as ea variable
             'admin_context' => $context,
             'pageName' => 'listLogsHtml',
             'entities' => $results->entries,

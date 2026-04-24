@@ -2,7 +2,6 @@
 
 namespace DualMedia\EsLogBundle\EasyAdmin\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -17,6 +16,7 @@ class LogEntryConfigurator implements FieldConfiguratorInterface
     ) {
     }
 
+    #[\Override]
     public function supports(
         FieldDto $field,
         EntityDto $entityDto
@@ -24,6 +24,7 @@ class LogEntryConfigurator implements FieldConfiguratorInterface
         return LogEntryField::class === $field->getFieldFqcn();
     }
 
+    #[\Override]
     public function configure(
         FieldDto $field,
         EntityDto $entityDto,
@@ -41,25 +42,18 @@ class LogEntryConfigurator implements FieldConfiguratorInterface
         $field->setCustomOption('controllerUrl', $this->getControllerUrl($request, $context));
     }
 
+    /**
+     * @param AdminContext<object> $context
+     */
     private function getControllerUrl(
         Request $request,
         AdminContext $context
     ): string {
-        $routeParametersForReferrer = $request->query->all();
-        unset($routeParametersForReferrer[EA::REFERRER]);
-        $currentPageReferrer = sprintf('%s%s?%s', $request->getBaseUrl(), $request->getPathInfo(), http_build_query($routeParametersForReferrer));
-
-        $this->adminUrlGenerator->setReferrer($currentPageReferrer); // this must be done before we start doing link stuff
-
-        $url = $this->adminUrlGenerator->unsetAll()
+        return $this->adminUrlGenerator->unsetAll()
             ->setAll($request->query->all())
             ->setController($context->getCrud()->getControllerFqcn())
             ->setEntityId($context->getEntity()->getPrimaryKeyValueAsString())
             ->setAction('listLogsHtml')
             ->generateUrl();
-
-        $this->adminUrlGenerator->removeReferrer();
-
-        return $url;
     }
 }
