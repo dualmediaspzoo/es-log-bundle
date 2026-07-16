@@ -4,6 +4,8 @@
 
 A Symfony Bundle for tracking changes and history of objects.
 
+## Deprecated in favor of https://github.com/dualmediaspzoo/log-bundle
+
 ## Install
 
 Simply `composer require dualmedia/es-log-bundle`
